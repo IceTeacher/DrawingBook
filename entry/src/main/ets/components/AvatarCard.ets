@@ -1,6 +1,5 @@
 @Component
-export default struct avatarCard {
-  @State message: string = 'Hello World';
+export default struct AvatarCard {
   @Prop imgUrl: string
   @Prop name: string
 
@@ -20,7 +19,7 @@ export default struct avatarCard {
       // "name": "宸瑄",
       Text(this.name)
         .margin(5)
-
+        .fontColor("#4d4d4d")
     }
   }
 }

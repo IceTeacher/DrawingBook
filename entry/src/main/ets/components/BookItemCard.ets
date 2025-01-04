@@ -1,5 +1,5 @@
 import { http } from '@kit.NetworkKit';
-import avatarCard from './AvatarCard';
+import AvatarCard from './AvatarCard';
 
 @Component
 export default struct BookItemCard {
@@ -60,7 +60,7 @@ export default struct BookItemCard {
                   .fontWeight(400)
                   .fontSize(11)
                   .margin(5)
-                avatarCard({ imgUrl: item.expert_info.avatar, name: item.expert_info.name })
+                AvatarCard({ imgUrl: item.expert_info.avatar, name: item.expert_info.name })
               }.margin(8)
               .width("65%")
               .alignItems(HorizontalAlign.Start)
