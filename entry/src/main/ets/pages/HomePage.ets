@@ -3,6 +3,7 @@ import { http } from '@kit.NetworkKit';
 import type { BookListItem } from '../components/BookListItemCard';
 import BookListItemCard from '../components/BookListItemCard';
 import router from '@ohos.router';
+import BookItemCard from '../components/BookItemCard';
 
 @Entry
 @Component
@@ -291,7 +292,7 @@ export default struct HomePage {
           // 模块主体
           Column() {
             // 此处写列表结构
-            Text("列表结构")
+            BookItemCard()
           }
           .width("100%")
           .padding({ top: 20, bottom: 20, left: 20 })
