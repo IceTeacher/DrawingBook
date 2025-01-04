@@ -26,8 +26,6 @@ struct CategoryPage {
   build() {
     Scroll() {
       Column() {
-        Text("全部分类")
-        Search()
         ForEach(this.category, (item: ESObject, index) => {
           Column() {
             Text(item.name).fontWeight(700).fontSize(20).margin({ left: 10, bottom: 15, top: 10 })
@@ -38,9 +36,8 @@ struct CategoryPage {
                   Text(icon.name).fontSize(12).fontColor("#808080")
                 }.width(55).margin(8)
                 .onClick(() => {
-                  console.log("id:", icon.id)
                   router.pushUrl({
-                    url: "pages/details",
+                    url: "pages/BookDetailPage",
                     params: {
                       id: icon.id,
                     }

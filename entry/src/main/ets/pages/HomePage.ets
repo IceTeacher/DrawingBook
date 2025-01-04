@@ -2,6 +2,7 @@ import { LengthMetrics } from '@kit.ArkUI';
 import { http } from '@kit.NetworkKit';
 import type { BookListItem } from '../components/BookListItemCard';
 import BookListItemCard from '../components/BookListItemCard';
+import router from '@ohos.router';
 
 @Entry
 @Component
@@ -12,6 +13,8 @@ export default struct HomePage {
   @State necessaryGoodsBookList: Array<ESObject> = []
   // 热门榜单状态
   @State homeLeaderBoardList: Array<ESObject> = []
+  // 所有分类列表
+  @State category: Array<ESObject> = []
 
   // 请求好书速递方法
   async getGoodBookList() {
@@ -42,11 +45,30 @@ export default struct HomePage {
     httpObject.destroy();
   }
 
+  //请求全部分类
+  async getCategoryList() {
+    //2.创建请求对象
+    let httpObject = http.createHttp();
+    //3.发出请求
+    let url = "https://van.mama.cn/hb/api/category/getFcList?position=1&sign=&uid="
+    //等待请求结果
+    let res = await httpObject.request(url, {
+      header: {
+        platformtype: "h5"
+      }
+    })
+    res = JSON.parse(res["result"] as string);
+    //找到需要使用的集合
+    let category: Array<ESObject> = res["data"]["list"][2]["tag_list"];
+    this.category = category;
+  }
+
   // 生命周期钩子，创建时
   aboutToAppear() {
     this.getGoodBookList()
     this.getNecessaryGoodsBookList()
     this.getHomeLeaderBoardList()
+    this.getCategoryList()
   }
 
   build() {
@@ -122,10 +144,43 @@ export default struct HomePage {
 
         // 两行分类
         Column() {
-          Text("两行分类")
+          Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceAround }) {
+            ForEach(this.category, (item: ESObject, index) => {
+              if (index < 9) {
+                Column() {
+                  Image(item.image).width(40)
+                  Text(item.name).fontSize(12).fontColor("#808080")
+                }.width(50).margin(8)
+                .onClick(() => {
+                  router.pushUrl({
+                    url: "pages/BookDetailPage",
+                    params: {
+                      id: item.id,
+                    }
+                  })
+                })
+              }
+              if (index == 9) {
+                Column() {
+                  Image(item.image).width(40)
+                  Text(item.name).fontSize(12).fontColor("#808080")
+                }.width(50).margin(8)
+                .onClick(() => {
+                  router.pushUrl({
+                    url: "pages/CategoryPage",
+                    params: {
+                      id: item.id,
+                    }
+                  })
+                })
+              }
+            })
+          }
         }
         .width("100%")
-        .padding({ top: 20, bottom: 20, left: 20 })
+        .padding({ bottom: 20 })
+        .width("100%")
+        .padding({ bottom: 20 })
 
         // 达人书单
         Column() {

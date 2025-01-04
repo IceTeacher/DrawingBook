@@ -4,6 +4,8 @@
     "pages/FindBookListPage",
     "pages/BookListPage",
     "pages/LoginPage",
-    "pages/HomePage"
+    "pages/HomePage",
+    "pages/CategoryPage",
+    "pages/BookDetailPage"
   ]
 }
