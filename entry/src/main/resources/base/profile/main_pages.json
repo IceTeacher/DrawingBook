@@ -1,0 +1,9 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/FindBookListPage",
+    "pages/BookListPage",
+    "pages/LoginPage",
+    "pages/HomePage"
+  ]
+}
