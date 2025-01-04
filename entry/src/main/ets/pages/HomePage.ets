@@ -3,7 +3,7 @@ import { http } from '@kit.NetworkKit';
 import type { BookListItem } from '../components/BookListItemCard';
 import BookListItemCard from '../components/BookListItemCard';
 import router from '@ohos.router';
-import BookItemCard from '../components/BookItemCard';
+import SearchItem from '../components/SearchItem';
 
 @Entry
 @Component
@@ -73,237 +73,247 @@ export default struct HomePage {
   }
 
   build() {
-    Scroll() {
-      Column() {
-        // 好书速递
+    Column() {
+      Row() {
+        SearchItem()
+      }
+      .width("100%")
+      .padding({ left: 20, right: 20 })
+
+      Scroll() {
         Column() {
-          // 模块顶部标题部分
-          Row() {
-            Text("好书速递")
-              .fontSize(24)
-              .fontWeight(700)
-              .fontColor("#404040")
-          }
-          .padding({ left: 20, right: 20 })
-
-          // 模块主体
-          Scroll() {
-            Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
-              ForEach(this.goodBookList, (item: ESObject) => {
-                Column() {
-                  Row({ space: 10 }) {
-                    Column() {
-                      Image(item.goods_thumb)
-                        .height(130)
-                        .borderRadius({ topRight: 20 })
-                    }
-
-                    Column({ space: 15 }) {
-                      Text(item.goods_name)
-                        .width("70%")
-                        .fontSize(18)
-                        .fontWeight(700)
-                        .fontColor("#40404")
-                      Text(item.goods_desc)
-                        .width("70%")
-                        .fontSize(14)
-                        .fontColor("#666")
-                        .maxLines(3)
-                        .textOverflow({ overflow: TextOverflow.Ellipsis })
-                    }
-                    .width("85%")
-                    .height("100%")
-                    .alignItems(HorizontalAlign.Start)
-                    .justifyContent(FlexAlign.Start)
-                  }
-                  .width("100%")
-                }
-                .width("85%")
-                .height(165)
-                .padding(15)
-                .borderRadius(15)
-                .borderStyle(BorderStyle.Solid)
-                .borderWidth(1)
-                .borderColor("#f4f4f4")
-                .shadow({
-                  radius: 25,
-                  color: "#c9f6f6f6",
-                  offsetX: 25,
-                  offsetY: 25
-                })
-              })
+          // 好书速递
+          Column() {
+            // 模块顶部标题部分
+            Row() {
+              Text("好书速递")
+                .fontSize(24)
+                .fontWeight(700)
+                .fontColor("#404040")
             }
-          }
-          .scrollable(ScrollDirection.Horizontal)
-          .scrollBar(BarState.Off)
-          .width("100%")
-          .height(200)
-          .padding({ left: 20 })
-        }
-        .width("100%")
-        .alignItems(HorizontalAlign.Start)
+            .padding({ left: 20, right: 20 })
 
-        // 两行分类
-        Column() {
-          Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceAround }) {
-            ForEach(this.category, (item: ESObject, index) => {
-              if (index < 9) {
-                Column() {
-                  Image(item.image).width(40)
-                  Text(item.name).fontSize(12).fontColor("#808080")
-                }.width(50).margin(8)
-                .onClick(() => {
-                  router.pushUrl({
-                    url: "pages/BookDetailPage",
-                    params: {
-                      id: item.id,
-                    }
-                  })
-                })
-              }
-              if (index == 9) {
-                Column() {
-                  Image(item.image).width(40)
-                  Text(item.name).fontSize(12).fontColor("#808080")
-                }.width(50).margin(8)
-                .onClick(() => {
-                  router.pushUrl({
-                    url: "pages/CategoryPage",
-                    params: {
-                      id: item.id,
-                    }
-                  })
-                })
-              }
-            })
-          }
-        }
-        .width("100%")
-        .padding({ bottom: 20 })
-        .width("100%")
-        .padding({ bottom: 20 })
+            // 模块主体
+            Scroll() {
+              Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
+                ForEach(this.goodBookList, (item: ESObject) => {
+                  Column() {
+                    Row({ space: 10 }) {
+                      Column() {
+                        Image(item.goods_thumb)
+                          .height(130)
+                          .borderRadius({ topRight: 20 })
+                      }
 
-        // 达人书单
-        Column() {
-          // 模块顶部标题部分
-          Row({ space: 5 }) {
-            Text("达人书单")
-              .fontSize(24)
-              .fontWeight(700)
-              .fontColor("#404040")
-            Text("200位阅读推广人联手推荐")
-              .fontSize(14)
-              .fontColor("#999999")
-            Text("37个书单 >")
-              .fontSize(14)
-              .fontColor("#999999")
-          }
-          .width("100%")
-          .padding({ left: 20, right: 20 })
-          .justifyContent(FlexAlign.SpaceBetween)
-
-          // 模块主体
-          Scroll() {
-            Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
-              ForEach(this.necessaryGoodsBookList, (item: BookListItem) => {
-                BookListItemCard({ widthValue: "80%", item })
-              })
-            }
-          }
-          .scrollable(ScrollDirection.Horizontal)
-          .scrollBar(BarState.Off)
-          .width("100%")
-          .padding({ top: 20, bottom: 20, left: 20 })
-        }
-        .width("100%")
-        .alignItems(HorizontalAlign.Start)
-
-        // 热门榜单
-        Column() {
-          // 模块顶部标题部分
-          Row({ space: 5 }) {
-            Text("热门榜单")
-              .fontSize(24)
-              .fontWeight(700)
-              .fontColor("#404040")
-            Text("详细榜单 >")
-              .fontSize(14)
-              .fontColor("#999999")
-          }
-          .width("100%")
-          .padding({ left: 20, right: 20 })
-          .justifyContent(FlexAlign.SpaceBetween)
-
-          // 模块主体
-          Scroll() {
-            Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
-              ForEach(this.homeLeaderBoardList, (item: ESObject) => {
-                Column({ space: 25 }) {
-                  Text(item.title)
-                    .fontSize(18)
-                    .fontWeight(700)
-                    .fontColor("#404040")
-                    .textAlign(TextAlign.Center)
-                  Row() {
-                    Flex({ alignContent: FlexAlign.Center, alignItems: ItemAlign.End }) {
-                      Image(decodeURIComponent(item.gallery[1].image))
-                        .height(80)
-                      Image(decodeURIComponent(item.gallery[0].image))
-                        .height(100)
-                        .margin({ left: -15, right: -15 })
-                        .zIndex(999)
-                      Image(decodeURIComponent(item.gallery[2].image))
-                        .height(80)
+                      Column({ space: 15 }) {
+                        Text(item.goods_name)
+                          .width("70%")
+                          .fontSize(18)
+                          .fontWeight(700)
+                          .fontColor("#40404")
+                        Text(item.goods_desc)
+                          .width("70%")
+                          .fontSize(14)
+                          .fontColor("#666")
+                          .maxLines(3)
+                          .textOverflow({ overflow: TextOverflow.Ellipsis })
+                      }
+                      .width("85%")
+                      .height("100%")
+                      .alignItems(HorizontalAlign.Start)
+                      .justifyContent(FlexAlign.Start)
                     }
                     .width("100%")
                   }
-                  .width("100%")
+                  .width("85%")
+                  .height(165)
+                  .padding(15)
+                  .borderRadius(15)
+                  .borderStyle(BorderStyle.Solid)
+                  .borderWidth(1)
+                  .borderColor("#f4f4f4")
+                  .shadow({
+                    radius: 25,
+                    color: "#c9f6f6f6",
+                    offsetX: 25,
+                    offsetY: 25
+                  })
+                })
+              }
+            }
+            .scrollable(ScrollDirection.Horizontal)
+            .scrollBar(BarState.Off)
+            .width("100%")
+            .height(200)
+            .padding({ left: 20 })
+          }
+          .width("100%")
+          .alignItems(HorizontalAlign.Start)
+
+          // 两行分类
+          Column() {
+            Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceAround }) {
+              ForEach(this.category, (item: ESObject, index) => {
+                if (index < 9) {
+                  Column() {
+                    Image(item.image).width(40)
+                    Text(item.name).fontSize(12).fontColor("#808080")
+                  }.width(50).margin(8)
+                  .onClick(() => {
+                    router.pushUrl({
+                      url: "pages/BookDetailPage",
+                      params: {
+                        id: item.id,
+                      }
+                    })
+                  })
                 }
-                .backgroundColor("#f6f6f6")
-                .width("50%")
-                .padding(30)
-                .borderRadius(15)
+                if (index == 9) {
+                  Column() {
+                    Image(item.image).width(40)
+                    Text(item.name).fontSize(12).fontColor("#808080")
+                  }.width(50).margin(8)
+                  .onClick(() => {
+                    router.pushUrl({
+                      url: "pages/CategoryPage",
+                      params: {
+                        id: item.id,
+                      }
+                    })
+                  })
+                }
               })
             }
           }
-          .scrollable(ScrollDirection.Horizontal)
-          .scrollBar(BarState.Off)
           .width("100%")
-          .padding({ top: 20, bottom: 20, left: 20 })
-        }
-        .width("100%")
-        .alignItems(HorizontalAlign.Start)
-
-        // 达人精选
-        Column() {
-          // 模块顶部标题部分
-          Row({ space: 5 }) {
-            Text("达人精选")
-              .fontSize(24)
-              .fontWeight(700)
-              .fontColor("#404040")
-            Text("8年绘本馆馆长精选绘本")
-              .fontSize(14)
-              .fontColor("#999999")
-          }
+          .padding({ bottom: 20 })
           .width("100%")
-          .padding({ left: 20, right: 20 })
+          .padding({ bottom: 20 })
 
-          // 模块主体
+          // 达人书单
           Column() {
-            // 此处写列表结构
-            BookItemCard()
+            // 模块顶部标题部分
+            Row({ space: 5 }) {
+              Text("达人书单")
+                .fontSize(24)
+                .fontWeight(700)
+                .fontColor("#404040")
+              Text("200位阅读推广人联手推荐")
+                .fontSize(14)
+                .fontColor("#999999")
+              Text("37个书单 >")
+                .fontSize(14)
+                .fontColor("#999999")
+            }
+            .width("100%")
+            .padding({ left: 20, right: 20 })
+            .justifyContent(FlexAlign.SpaceBetween)
+
+            // 模块主体
+            Scroll() {
+              Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
+                ForEach(this.necessaryGoodsBookList, (item: BookListItem) => {
+                  BookListItemCard({ cardWidthValue: "80%", imageWidthValue: "90%", item })
+                })
+              }
+            }
+            .scrollable(ScrollDirection.Horizontal)
+            .scrollBar(BarState.Off)
+            .width("100%")
+            .padding({ top: 20, bottom: 20, left: 20 })
           }
           .width("100%")
-          .padding({ top: 20, bottom: 20, left: 20 })
-        }
-        .width("100%")
-        .alignItems(HorizontalAlign.Start)
-      }
-      .width('100%')
-      .backgroundColor("#FCFCFC")
+          .alignItems(HorizontalAlign.Start)
 
+          // 热门榜单
+          Column() {
+            // 模块顶部标题部分
+            Row({ space: 5 }) {
+              Text("热门榜单")
+                .fontSize(24)
+                .fontWeight(700)
+                .fontColor("#404040")
+              Text("详细榜单 >")
+                .fontSize(14)
+                .fontColor("#999999")
+            }
+            .width("100%")
+            .padding({ left: 20, right: 20 })
+            .justifyContent(FlexAlign.SpaceBetween)
+
+            // 模块主体
+            Scroll() {
+              Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
+                ForEach(this.homeLeaderBoardList, (item: ESObject) => {
+                  Column({ space: 25 }) {
+                    Text(item.title)
+                      .fontSize(18)
+                      .fontWeight(700)
+                      .fontColor("#404040")
+                      .textAlign(TextAlign.Center)
+                      .maxLines(1)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                    Row() {
+                      Flex({ alignContent: FlexAlign.Center, alignItems: ItemAlign.End }) {
+                        Image(decodeURIComponent(item.gallery[1].image))
+                          .height(80)
+                        Image(decodeURIComponent(item.gallery[0].image))
+                          .height(100)
+                          .margin({ left: -15, right: -15 })
+                          .zIndex(999)
+                        Image(decodeURIComponent(item.gallery[2].image))
+                          .height(80)
+                      }
+                      .width("100%")
+                    }
+                    .width("100%")
+                  }
+                  .backgroundColor("#f6f6f6")
+                  .width("50%")
+                  .padding(30)
+                  .borderRadius(15)
+                })
+              }
+            }
+            .scrollable(ScrollDirection.Horizontal)
+            .scrollBar(BarState.Off)
+            .width("100%")
+            .padding({ top: 20, bottom: 20, left: 20 })
+          }
+          .width("100%")
+          .alignItems(HorizontalAlign.Start)
+
+          // 达人精选
+          Column() {
+            // 模块顶部标题部分
+            Row({ space: 5 }) {
+              Text("达人精选")
+                .fontSize(24)
+                .fontWeight(700)
+                .fontColor("#404040")
+              Text("8年绘本馆馆长精选绘本")
+                .fontSize(14)
+                .fontColor("#999999")
+            }
+            .width("100%")
+            .padding({ left: 20, right: 20 })
+
+            // 模块主体
+            Column() {
+              // 此处写列表结构
+              Text("列表结构")
+            }
+            .width("100%")
+            .padding({ top: 20, bottom: 20, left: 20 })
+          }
+          .width("100%")
+          .alignItems(HorizontalAlign.Start)
+        }
+        .width('100%')
+        .backgroundColor("#FCFCFC")
+      }
+      .height('100%')
+      .margin({ top: 20 })
     }
-    .height('100%')
   }
 }

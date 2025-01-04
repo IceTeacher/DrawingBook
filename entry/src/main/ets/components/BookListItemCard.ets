@@ -52,16 +52,17 @@ interface Expert {
 
 @Component
 export default struct BookListItemCard {
-  @Prop widthValue: string
+  @Prop cardWidthValue: string
+  @Prop imageWidthValue: string
   @Prop item: BookListItem
 
   // BookListItemCard
   build() {
-    Column({ space: 15 }) {
+    Column({ space: 5 }) {
       Image(this.item.goods_thumb)
-        .width("80%")
-        .height(140)
+        .width(this.imageWidthValue)
         .borderRadius({ topRight: 20 })
+        .margin({ bottom: 10 })
 
       Row() {
         Text(this.item.goods_name)
@@ -70,6 +71,7 @@ export default struct BookListItemCard {
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
       }
+      .width("100%")
 
       Row() {
         Text(this.item.expert_description)
@@ -79,6 +81,7 @@ export default struct BookListItemCard {
           .maxLines(3)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
       }
+      .width("100%")
 
       Row() {
         AvatarCard({ imgUrl: this.item.expert.avatar, name: this.item.expert.name })
@@ -86,7 +89,7 @@ export default struct BookListItemCard {
       .width("100%")
       .justifyContent(FlexAlign.Start)
     }
-    .width(this.widthValue)
+    .width(this.cardWidthValue)
     .padding(20)
     .borderRadius(15)
     .borderStyle(BorderStyle.Solid)
