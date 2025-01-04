@@ -10,7 +10,7 @@ struct CategoryPage {
     //2.创建请求对象
     let httpObject = http.createHttp();
     //3.发出请求
-    let url = "https://van.mama.cn/hb/api/category/getFcList"
+    let url = "https://van.mama.cn/hb/api/category/getFcList?position=1&sign=&uid="
     //等待请求结果
     let res = await httpObject.request(url)
     res = JSON.parse(res["result"] as string);
