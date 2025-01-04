@@ -86,7 +86,6 @@ export default struct BookListItemCard {
       .width("100%")
       .justifyContent(FlexAlign.Start)
     }
-    .margin({ right: 20 })
     .width(this.widthValue)
     .padding(20)
     .borderRadius(15)

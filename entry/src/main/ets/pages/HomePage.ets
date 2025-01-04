@@ -38,6 +38,7 @@ export default struct HomePage {
     let url = "https://van.mama.cn/hb/api/leaderboard/homeLeaderboard?sign=&uid="
     let res = await httpObject.request(url)
     this.homeLeaderBoardList = JSON.parse(res["result"] as string)["data"]["list"]
+    // console.log("homeLeaderBoardList", JSON.stringify(this.homeLeaderBoardList))
     httpObject.destroy();
   }
 
@@ -181,27 +182,29 @@ export default struct HomePage {
           Scroll() {
             Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
               ForEach(this.homeLeaderBoardList, (item: ESObject) => {
-                Column({ space: 15 }) {
+                Column({ space: 25 }) {
                   Text(item.title)
                     .fontSize(18)
                     .fontWeight(700)
                     .fontColor("#404040")
                     .textAlign(TextAlign.Center)
                   Row() {
-                    Stack() {
-                      Image(decodeURIComponent(item.gallery[0]))
+                    Flex({ alignContent: FlexAlign.Center, alignItems: ItemAlign.End }) {
+                      Image(decodeURIComponent(item.gallery[1].image))
                         .height(80)
-                      Image(decodeURIComponent(item.gallery[1]))
+                      Image(decodeURIComponent(item.gallery[0].image))
                         .height(100)
-                      Image(decodeURIComponent(item.gallery[2]))
+                        .margin({ left: -15, right: -15 })
+                        .zIndex(999)
+                      Image(decodeURIComponent(item.gallery[2].image))
                         .height(80)
                     }
+                    .width("100%")
                   }
                   .width("100%")
                 }
                 .backgroundColor("#f6f6f6")
-                .margin({ right: 20 })
-                .width("60%")
+                .width("50%")
                 .padding(30)
                 .borderRadius(15)
               })
