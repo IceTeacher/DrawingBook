@@ -281,6 +281,15 @@ export default struct HomePage {
                     }
                     .width("100%")
                   }
+                  .onClick(() => {
+                    router.pushUrl({
+                      url: "pages/RankListPage",
+                      params: {
+                        attr_val_id: item.attr_val_id
+                      }
+                    })
+                    console.log("attr_val_id", item.attr_val_id)
+                  })
                   .backgroundColor("#f6f6f6")
                   .width("50%")
                   .padding(30)
