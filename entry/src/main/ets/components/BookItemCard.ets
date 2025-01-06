@@ -243,7 +243,8 @@ export default struct BookItemCard {
                 .stars(5)
                 .stepSize(0.1)
                 .height(20)
-              Text(this.bookRankItem[0].avg_score)
+              Text(this.bookRankItem[0].avg_score.includes('.') ? this.bookRankItem[0].avg_score :
+                `${this.bookRankItem[0].avg_score}.0`)
                 .fontSize(16)
                 .fontColor("#404040")
             }
