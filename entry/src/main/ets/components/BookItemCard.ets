@@ -1,88 +1,192 @@
-import { http } from '@kit.NetworkKit';
 import AvatarCard from './AvatarCard';
+import { LengthMetrics } from '@kit.ArkUI';
 
 @Component
 export default struct BookItemCard {
-  // BookItemCard
-  @State BookList: Array<ESObject> = []
-  @State goods_position: number = 0
-  @State canload: boolean = true
-  @State haveMore: boolean = true;
+  // 书籍数据
+  @Prop bookItem?: Array<ESObject> = []
+  // 控制是否展示音频相关内容
+  @Prop audioBookItem?: Array<ESObject> = []
+  // 组件宽度
+  @Prop widthValue?: number = 100
+  // 组件高度
+  @Prop heightValue?: number = 150
+  // y轴间隔
+  @Prop ySpaceValue?: number = 5
+  // x轴间隔
+  @Prop xSpaceValue?: number = 15
+  // 控制是否展示书籍简介
+  @Prop isShowDesc?: boolean = true
+  // 控制是否展示标签
+  @Prop isShowLabel?: boolean = false
+  // 控制是否展示头像
+  @Prop isShowAvatar?: boolean = true
 
-  aboutToAppear(): void {
-    this.getBookItemCard(0);
-  }
-
-  async getBookItemCard(goods_position: number) {
-    this.canload = false;
-    // 网络请求
-    let httpObject = http.createHttp();
-    let url =
-      "https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=0" + goods_position +
-        "&from=index&sign=&uid="
-    let res = await httpObject.request(url, {
-      header: {
-        platformtype: "h5"
-      }
-    })
-    res = JSON.parse(res["result"] as string);
-    let BookList: Array<ESObject> = res["data"]["list"];
-    this.BookList.push(...BookList);
-    if (BookList.length >= 1 && this.BookList.length <= 100) {
-      this.canload = true;
-    } else {
-      this.haveMore = false;
+  // 书籍简介子组件
+  @Builder
+  BookItemDesc(desc: string) {
+    if (this.isShowDesc) {
+      Text(desc)
+        .fontSize(12)
+        .fontColor("#666666")
+        .lineHeight(22)
     }
-
   }
 
-  build() {
-
-    Column() {
-      List() {
-        ForEach(this.BookList, (item: ESObject) => {
-          ListItem() {
-            Row() {
-              // goods_thumb
-              Image(item.goods_thumb)
-                .height(130)
-                .borderRadius({ topRight: 20 })
-
-              Column() {
-                // goods_name
-                Text(item.goods_name)
-                  .fontSize(18)
-                  .fontWeight(600)
-                  .lineHeight(24)
-                  .margin(5)
-                // expert_introduction
-                Text(item.expert_info.expert_introduction)
-                  .fontWeight(400)
-                  .fontSize(11)
-                  .margin(5)
-                AvatarCard({ imgUrl: item.expert_info.avatar, name: item.expert_info.name })
-              }.margin(8)
-              .width("65%")
-              .alignItems(HorizontalAlign.Start)
-              .height(130)
-            }
-            .padding(10)
-          }
-        })
-        ListItem() {
-          Text(this.haveMore ? "让我缓缓~~~" : "人家也是有底线的~~~")
-            .fontSize(14)
-            .fontWeight(600)
-            .margin({ left: 100 })
-        }
-      }.onScrollIndex((start, end) => {
-        console.log(start.toString(), end.toString())
-        if (end >= (this.goods_position + 10) && this.canload) {
-          this.goods_position += 10;
-          console.log(this.goods_position.toString())
-          this.getBookItemCard(this.goods_position)
+  // 书籍分类标签子组件
+  @Builder
+  BookItemLabel(labelList: Array<ESObject>) {
+    Flex({ wrap: FlexWrap.Wrap, space: { main: LengthMetrics.vp(10), cross: LengthMetrics.vp(10) } }) {
+      ForEach(labelList, (item: ESObject, index) => {
+        if (index <= 2) {
+          Text(item.label_name)
+            .fontSize(12)
+            .fontColor("#666666")
+            .backgroundColor("#efefef")
+            .padding(5)
         }
       })
     }
+  }
+
+  build() {
+    Column() {
+      Row({ space: this.xSpaceValue }) {
+        if (this.bookItem?.length === 1) {
+          // 书籍封面
+          Stack() {
+            Column()
+              .width(20)
+              .height(this.heightValue)
+              .linearGradient({
+                angle: 90,
+                colors: [["#b0a4a4a4", 0.0], ["#66989898", 0.5], ["#00ffffff", 1.0]]
+              })
+              .zIndex(999)
+            Image(this.bookItem[0].goods_thumb)
+              .height(this.heightValue)
+              .borderRadius({ topRight: 20 })
+              .borderStyle(BorderStyle.Solid)
+              .borderWidth(1)
+              .borderColor("#f4f4f4")
+              .shadow({
+                radius: vp2px(10),
+                color: "#688f8f8f",
+                offsetX: 15,
+                offsetY: 15,
+                fill: true
+              })
+          }
+          .alignContent(Alignment.Start)
+
+          Column({ space: this.ySpaceValue }) {
+            // 书籍标题
+            Text(this.bookItem[0].goods_name)
+              .fontSize(18)
+              .fontWeight(700)
+              .lineHeight(24)
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+            if (this.bookItem[0].expert_info) {
+              // 书籍简介
+              this.BookItemDesc(this.bookItem[0].expert_info.expert_introduction)
+              // 书籍分类标签
+              if (this.isShowLabel) {
+                this.BookItemLabel(this.bookItem[0].label_list)
+              }
+              // 作者头像
+              if (this.isShowAvatar) {
+                AvatarCard({ imgUrl: this.bookItem[0].expert_info.avatar, name: this.bookItem[0].expert_info.name })
+              }
+            }
+
+            if (this.bookItem[0].expert_speak_info) {
+              // 书籍简介
+              this.BookItemDesc(this.bookItem[0].expert_speak_info.description)
+              // 作者头像
+              if (this.isShowAvatar) {
+                AvatarCard({
+                  imgUrl: this.bookItem[0].expert_speak_info.avatar,
+                  name: this.bookItem[0].expert_speak_info.name
+                })
+              }
+            }
+          }
+          .width(`${0.65 * this.widthValue!}%`)
+          .alignItems(HorizontalAlign.Start)
+          .height(this.heightValue)
+        }
+
+        if (this.audioBookItem?.length === 1) {
+          // 书籍封面
+          Stack() {
+            Column()
+              .width(20)
+              .height(this.heightValue)
+              .linearGradient({
+                angle: 90,
+                colors: [["#b0a4a4a4", 0.0], ["#66989898", 0.5], ["#00ffffff", 1.0]]
+              })
+              .zIndex(999)
+            Image(this.audioBookItem[0].cover_image)
+              .height(this.heightValue)
+              .borderRadius({ topRight: 20 })
+              .borderStyle(BorderStyle.Solid)
+              .borderWidth(1)
+              .borderColor("#f4f4f4")
+              .shadow({
+                radius: vp2px(10),
+                color: "#688f8f8f",
+                offsetX: 15,
+                offsetY: 15,
+                fill: true
+              })
+          }
+          .alignContent(Alignment.Start)
+
+          Column({ space: this.ySpaceValue }) {
+            // 书籍标题
+            Text(this.audioBookItem[0].title)
+              .fontSize(18)
+              .fontWeight(700)
+              .lineHeight(24)
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+            // 展示音频信息
+            Row({ space: 10 }) {
+              Text() {
+                ImageSpan($r("app.media.music_clock")).width(15).margin({ right: 3 })
+                Span(`${Math.floor(Number(this.audioBookItem[0].time) / 60)}:${Number(this.audioBookItem[0].time) %
+                  60}`)
+                  .fontSize(14)
+                  .fontColor("#999999")
+              }
+
+              Text() {
+                ImageSpan($r("app.media.music_earphone")).width(15).margin({ right: 3 })
+                Span(`${this.audioBookItem[0].play_num}K`)
+                  .fontSize(14)
+                  .fontColor("#999999")
+              }
+            }
+
+            // 作者头像
+            if (this.isShowAvatar) {
+              AvatarCard({
+                imgUrl: this.audioBookItem[0].expert_info.avatar,
+                name: this.audioBookItem[0].expert_info.name
+              })
+            }
+          }
+          .width(`${0.65 * this.widthValue!}%`)
+          .alignItems(HorizontalAlign.Start)
+          .height(this.heightValue)
+        }
+      }
+      .width(`${this.widthValue!}%`)
+    }
+    .margin({ bottom: 20 })
   }
 }

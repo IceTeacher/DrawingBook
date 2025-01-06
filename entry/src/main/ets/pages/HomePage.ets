@@ -4,6 +4,7 @@ import type { BookListItem } from '../components/BookListItemCard';
 import BookListItemCard from '../components/BookListItemCard';
 import router from '@ohos.router';
 import SearchItem from '../components/SearchItem';
+import BookItemCard from '../components/BookItemCard';
 
 @Entry
 @Component
@@ -14,8 +15,11 @@ export default struct HomePage {
   @State necessaryGoodsBookList: Array<ESObject> = []
   // 热门榜单状态
   @State homeLeaderBoardList: Array<ESObject> = []
+  // 达人精选书籍列表
+  @State talentGoodsList: Array<ESObject> = []
   // 所有分类列表
   @State category: Array<ESObject> = []
+  @State testArr: Array<ESObject> = []
 
   // 请求好书速递方法
   async getGoodBookList() {
@@ -42,7 +46,25 @@ export default struct HomePage {
     let url = "https://van.mama.cn/hb/api/leaderboard/homeLeaderboard?sign=&uid="
     let res = await httpObject.request(url)
     this.homeLeaderBoardList = JSON.parse(res["result"] as string)["data"]["list"]
-    // console.log("homeLeaderBoardList", JSON.stringify(this.homeLeaderBoardList))
+    httpObject.destroy();
+  }
+
+  // 请求达人精选方法
+  async getTalentGoodsList() {
+    let httpObject = http.createHttp();
+    let url =
+      "https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=0&from=index&sign=&uid="
+    let res = await httpObject.request(url)
+    this.talentGoodsList = JSON.parse(res["result"] as string)["data"]["list"]
+    httpObject.destroy();
+  }
+
+  async getTestArr() {
+    let httpObject = http.createHttp();
+    let url =
+      "https://van.mama.cn/hb/api/goodsAudio/getList?page=1&language=0&perpage=10&sign=&uid="
+    let res = await httpObject.request(url)
+    this.testArr = JSON.parse(res["result"] as string)["data"]["list"]
     httpObject.destroy();
   }
 
@@ -70,6 +92,8 @@ export default struct HomePage {
     this.getNecessaryGoodsBookList()
     this.getHomeLeaderBoardList()
     this.getCategoryList()
+    this.getTalentGoodsList()
+    this.getTestArr()
   }
 
   build() {
@@ -300,8 +324,13 @@ export default struct HomePage {
 
             // 模块主体
             Column() {
-              // 此处写列表结构
-              Text("列表结构")
+              List() {
+                ForEach(this.talentGoodsList, (item: ESObject) => {
+                  ListItem() {
+                    BookItemCard({ bookItem: [item] })
+                  }
+                })
+              }
             }
             .width("100%")
             .padding({ top: 20, bottom: 20, left: 20 })
