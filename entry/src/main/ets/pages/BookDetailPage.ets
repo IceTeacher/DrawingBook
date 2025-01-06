@@ -1,20 +1,18 @@
+import { router } from '@kit.ArkUI';
+
 @Entry
 @Component
 struct BookDetailPage {
-  @State message: string = 'Hello World';
+  // 获取图书id
+  @State goods_id: string = ""
+
+  aboutToAppear(): void {
+    let params: ESObject = router.getParams() as ESObject;
+    this.goods_id = (params.goods_id)
+  }
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('BookDetailPageHelloWorld')
-        .fontSize(50)
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
-    }
-    .height('100%')
-    .width('100%')
+
+
   }
 }
