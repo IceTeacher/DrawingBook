@@ -19,7 +19,6 @@ export default struct HomePage {
   @State talentGoodsList: Array<ESObject> = []
   // 所有分类列表
   @State category: Array<ESObject> = []
-  @State testArr: Array<ESObject> = []
 
   // 请求好书速递方法
   async getGoodBookList() {
@@ -59,15 +58,6 @@ export default struct HomePage {
     httpObject.destroy();
   }
 
-  async getTestArr() {
-    let httpObject = http.createHttp();
-    let url =
-      "https://van.mama.cn/hb/api/goodsAudio/getList?page=1&language=0&perpage=10&sign=&uid="
-    let res = await httpObject.request(url)
-    this.testArr = JSON.parse(res["result"] as string)["data"]["list"]
-    httpObject.destroy();
-  }
-
   //请求全部分类
   async getCategoryList() {
     //2.创建请求对象
@@ -93,7 +83,6 @@ export default struct HomePage {
     this.getHomeLeaderBoardList()
     this.getCategoryList()
     this.getTalentGoodsList()
-    this.getTestArr()
   }
 
   build() {

@@ -101,19 +101,27 @@ export default struct BookItemCard {
               }
               // 作者头像
               if (this.isShowAvatar) {
-                AvatarCard({ imgUrl: this.bookItem[0].expert_info.avatar, name: this.bookItem[0].expert_info.name })
+                if (this.bookItem[0].expert_info.avatar) {
+                  AvatarCard({ imgUrl: this.bookItem[0].expert_info.avatar, name: this.bookItem[0].expert_info.name })
+                }
               }
             }
 
             if (this.bookItem[0].expert_speak_info) {
               // 书籍简介
-              this.BookItemDesc(this.bookItem[0].expert_speak_info.description)
+              if (this.bookItem[0].expert_speak_info.description) {
+                this.BookItemDesc(this.bookItem[0].expert_speak_info.description)
+              } else {
+                this.BookItemDesc(this.bookItem[0].goods_desc)
+              }
               // 作者头像
               if (this.isShowAvatar) {
-                AvatarCard({
-                  imgUrl: this.bookItem[0].expert_speak_info.avatar,
-                  name: this.bookItem[0].expert_speak_info.name
-                })
+                if (this.bookItem[0].expert_speak_info.avatar) {
+                  AvatarCard({
+                    imgUrl: this.bookItem[0].expert_speak_info.avatar,
+                    name: this.bookItem[0].expert_speak_info.name
+                  })
+                }
               }
             }
           }
@@ -178,10 +186,12 @@ export default struct BookItemCard {
 
             // 作者头像
             if (this.isShowAvatar) {
-              AvatarCard({
-                imgUrl: this.audioBookItem[0].expert_info.avatar,
-                name: this.audioBookItem[0].expert_info.name
-              })
+              if (this.audioBookItem[0].expert_info.avatar) {
+                AvatarCard({
+                  imgUrl: this.audioBookItem[0].expert_info.avatar,
+                  name: this.audioBookItem[0].expert_info.name
+                })
+              }
             }
           }
           .width(`${0.65 * this.widthValue!}%`)
