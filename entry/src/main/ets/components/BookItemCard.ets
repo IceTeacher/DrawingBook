@@ -7,6 +7,8 @@ export default struct BookItemCard {
   @Prop bookItem?: Array<ESObject> = []
   // 控制是否展示音频相关内容
   @Prop audioBookItem?: Array<ESObject> = []
+  // 控制是否展示排行榜列表项
+  @Prop bookRankItem?: Array<ESObject> = []
   // 控制书籍简介显示行数
   @Prop descMaxLines?: number = 3
   // 组件宽度
@@ -191,6 +193,67 @@ export default struct BookItemCard {
                   imgUrl: this.audioBookItem[0].expert_info.avatar,
                   name: this.audioBookItem[0].expert_info.name
                 })
+              }
+            }
+          }
+          .width(`${0.65 * this.widthValue!}%`)
+          .alignItems(HorizontalAlign.Start)
+          .height(this.heightValue)
+        }
+
+        if (this.bookRankItem?.length === 1) {
+          // 书籍封面
+          Stack() {
+            Column()
+              .width(20)
+              .height(this.heightValue)
+              .linearGradient({
+                angle: 90,
+                colors: [["#b0a4a4a4", 0.0], ["#66989898", 0.5], ["#00ffffff", 1.0]]
+              })
+              .zIndex(999)
+            Image(this.bookRankItem[0].goods_thumb)
+              .height(this.heightValue)
+              .borderRadius({ topRight: 20 })
+              .borderStyle(BorderStyle.Solid)
+              .borderWidth(1)
+              .borderColor("#f4f4f4")
+              .shadow({
+                radius: vp2px(10),
+                color: "#688f8f8f",
+                offsetX: 15,
+                offsetY: 15,
+                fill: true
+              })
+          }
+          .alignContent(Alignment.Start)
+
+          Column({ space: this.ySpaceValue }) {
+            // 书籍标题
+            Text(this.bookRankItem[0].goods_name)
+              .fontSize(18)
+              .fontWeight(700)
+              .lineHeight(24)
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+            // 展示评分
+            Row({ space: 10 }) {
+              Rating({ rating: Number(this.bookRankItem[0].avg_score) / 2, indicator: true })
+                .stars(5)
+                .stepSize(0.1)
+                .height(20)
+              Text(this.bookRankItem[0].avg_score)
+                .fontSize(16)
+                .fontColor("#404040")
+            }
+
+            // 展示排行榜进步名次
+            if (Number(this.bookRankItem[0].rising_ranking)) {
+              Row({ space: 10 }) {
+                Text(`上升${this.bookRankItem[0].rising_ranking}位 ↑`)
+                  .fontSize(14)
+                  .fontColor("#999999")
               }
             }
           }
