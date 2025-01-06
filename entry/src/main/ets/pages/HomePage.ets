@@ -327,7 +327,7 @@ export default struct HomePage {
               List() {
                 ForEach(this.talentGoodsList, (item: ESObject) => {
                   ListItem() {
-                    BookItemCard({ bookItem: [item] })
+                    BookItemCard({ bookItem: [item], descMaxLines: 3 })
                   }
                 })
               }

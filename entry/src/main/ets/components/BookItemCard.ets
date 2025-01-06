@@ -7,6 +7,8 @@ export default struct BookItemCard {
   @Prop bookItem?: Array<ESObject> = []
   // 控制是否展示音频相关内容
   @Prop audioBookItem?: Array<ESObject> = []
+  // 控制书籍简介显示行数
+  @Prop descMaxLines?: number = 3
   // 组件宽度
   @Prop widthValue?: number = 100
   // 组件高度
@@ -30,6 +32,8 @@ export default struct BookItemCard {
         .fontSize(12)
         .fontColor("#666666")
         .lineHeight(22)
+        .maxLines(this.descMaxLines)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
     }
   }
 
