@@ -108,7 +108,11 @@ export default struct BookItemCard {
               // 作者头像
               if (this.isShowAvatar) {
                 if (this.bookItem[0].expert_info.avatar) {
-                  AvatarCard({ imgUrl: this.bookItem[0].expert_info.avatar, name: this.bookItem[0].expert_info.name })
+                  AvatarCard({
+                    imgUrl: this.bookItem[0].expert_info.avatar,
+                    name: this.bookItem[0].expert_info.name,
+                    masterId: this.bookItem[0].expert_info.id
+                  })
                 }
               }
             }
@@ -125,7 +129,8 @@ export default struct BookItemCard {
                 if (this.bookItem[0].expert_speak_info.avatar) {
                   AvatarCard({
                     imgUrl: this.bookItem[0].expert_speak_info.avatar,
-                    name: this.bookItem[0].expert_speak_info.name
+                    name: this.bookItem[0].expert_speak_info.name,
+                    masterId: this.bookItem[0].expert_speak_info.id
                   })
                 }
               }
@@ -202,7 +207,8 @@ export default struct BookItemCard {
               if (this.bookAudioItem[0].expert_info.avatar) {
                 AvatarCard({
                   imgUrl: this.bookAudioItem[0].expert_info.avatar,
-                  name: this.bookAudioItem[0].expert_info.name
+                  name: this.bookAudioItem[0].expert_info.name,
+                  masterId: this.bookAudioItem[0].expert_info.id
                 })
               }
             }

@@ -1,7 +1,10 @@
+import { router } from '@kit.ArkUI'
+
 @Component
 export default struct AvatarCard {
   @Prop imgUrl: string
   @Prop name: string
+  @Prop masterId: string
 
   build() {
     Row() {
@@ -20,6 +23,13 @@ export default struct AvatarCard {
         .margin(5)
         .fontSize(14)
         .fontColor("#4d4d4d")
-    }
+    }.onClick(() => {
+      router.pushUrl({
+        url: "pages/UserProfilePage",
+        params: {
+          masterId: this.masterId
+        }
+      })
+    })
   }
 }
