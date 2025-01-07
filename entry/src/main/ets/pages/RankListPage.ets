@@ -18,7 +18,7 @@ struct RankListPage {
   @State paramsArray: Array<string> = ["&", "&"]
   @State currentAgeIndex: number = 0
   @State currentCategoryIndex: number = 0
-  // 临时参数用于储存tab类型
+  // 临时参数用于储存tab类型0=总榜，1=月上升榜
   @State temp: number = 0
   // 滚动加载使用的变量
   @State page: number = 1 // 是否可以加载
@@ -41,7 +41,7 @@ struct RankListPage {
     // 接收参数
     let params: ESObject = router.getParams() as ESObject;
     this.paramsArray[0] = (params.attr_val_id)
-    this.paramsArray[1] = "&"
+    this.paramsArray[1] = ""
     this.currentAgeIndex = params.attr_val_id - 669 + 1
     this.getCategoryLab();
     this.getBookList(this.page);
@@ -62,8 +62,8 @@ struct RankListPage {
     let labAgeArray: Array<ESObject> = res["data"]["age"];
     this.labCategoryArray.push(labCategoryList);
     this.labAgeArray.push(labAgeArray);
-    this.labAgeArray[0].unshift({ "attr_val_id": "&", "attr_name": "全部年龄" })
-    this.labCategoryArray[0].unshift({ "category_id": "&", "category_name": "全部类型" })
+    this.labAgeArray[0].unshift({ "attr_val_id": "", "attr_name": "全部年龄" })
+    this.labCategoryArray[0].unshift({ "category_id": "", "category_name": "全部类型" })
     console.log(JSON.stringify(this.labCategoryArray))
     console.log(JSON.stringify(this.labAgeArray))
 
@@ -74,7 +74,7 @@ struct RankListPage {
     let httpObject = http.createHttp();
     let url =
       "http://van.mama.cn/hb/api/leaderboard/getList?category_id=" + this.paramsArray[1] +
-        "attr_val_id=" + this.paramsArray[0] + "&list_type=" + this.temp +
+        "&attr_val_id=" + this.paramsArray[0] + "&list_type=" + this.temp +
         "&page=" + page + "&perpage=10&sign=&uid="
     let res = await httpObject.request(url, {
       header: {
@@ -83,11 +83,6 @@ struct RankListPage {
     })
     res = JSON.parse(res["result"] as string);
     let bookList: Array<ESObject> = res["data"]["list"];
-    // if (bookList.length < 10) {
-    //   this.canLoad = false
-    // } else {
-    //   this.canLoad = true
-    // }
     if (this.bookList.length == 1) {
       this.bookList[0] = this.bookList[0].concat(bookList)
     } else {
@@ -125,7 +120,7 @@ struct RankListPage {
                           .backgroundColor(index == this.currentAgeIndex ? "#eefaf7" : "#fff")
                           .onClick(() => {
                             if (index != this.currentAgeIndex) {
-
+                              this.page = 1
                               this.currentAgeIndex = index
                               if (index != 0) {
                                 this.paramsArray[0] = item.attr_val_id
@@ -138,7 +133,7 @@ struct RankListPage {
                             }
                           })
                       }
-                      .width("20%")
+                      .width("24%")
                       .height("20")
                       .alignItems(HorizontalAlign.Start)
                       .justifyContent(FlexAlign.Start)
@@ -177,6 +172,7 @@ struct RankListPage {
                         .backgroundColor(index == this.currentCategoryIndex ? "#eefaf7" : "#fff")
                         .onClick(() => {
                           if (index != this.currentCategoryIndex) {
+                            this.page = 1
                             this.currentCategoryIndex = index
                             if (index != 0) {
                               this.paramsArray[1] = item.category_id
@@ -189,7 +185,7 @@ struct RankListPage {
                           }
                         })
                     }
-                    .width("20%")
+                    .width("24%")
                     .height("20")
                     .alignItems(HorizontalAlign.Start)
                     .justifyContent(FlexAlign.Start)
@@ -210,118 +206,75 @@ struct RankListPage {
       }.width("100%")
       .height(80)
 
+      // 按钮切换榜单
+      Row() {
+        ForEach(this.tabArray, (item: string, index: number) => {
+          Column() {
+            Button(item).onClick((event: ClickEvent) => {
+              if (index != this.temp) {
+                this.page = 1
+                this.temp = index;
+                this.bookList = []
+                this.getBookList(1)
+              }
+            }).fontColor(index == this.temp ? "#404040" : "#aaaaaa")
+              .backgroundColor("#fff")
+            Text()
+              .height(5)
+              .width("8%")
+              .backgroundColor(index == this.temp ? "#5cd3b4" : "#fff")
+          }
+        })
+      }.margin({ bottom: 10 })
+
       // 分页
       Column() {
-        Tabs() {
-          // 总榜
-          TabContent() {
-            Column() {
-              List() {
-                ForEach(this.bookList[0], (item: ESObject, index: number) => {
-                  ListItem() {
-                    Row() {
-                      Text((index + 1 < 10 ? "0" : "") + (index + 1).toString())
-                        .fontColor(index + 1 < 4 ? "#d9b964" : "#9da2ab")
-                        .fontSize(18)
-                        .fontWeight(700)
-                      Column() {
-                        BookItemCard({
-                          bookRankItem: [item],
-                          ySpaceValue: 8,
-                          widthValue: 80,
-                          heightValue: 110
-                        }).onClick(() => {
-                          router.pushUrl({
-                            url: "pages/BookDetailPage",
-                            params: {
-                              goods_id: item.goods_id
-                            }
-                          })
-                        })
-                      }
-                      .width("90%")
-                      .height(110)
-                    }
-                    .width("100%")
-                    .height(130)
-                    .padding({ left: 20, right: 20 })
+        Column() {
+          List() {
+            ForEach(this.bookList[0], (item: ESObject, index: number) => {
+              ListItem() {
+                Row() {
+                  Text((index + 1 < 10 ? "0" : "") + (index + 1).toString())
+                    .fontColor(index + 1 < 4 ? "#d9b964" : "#9da2ab")
+                    .fontSize(18)
+                    .fontWeight(700)
+                  Column() {
+                    BookItemCard({
+                      bookRankItem: [item],
+                      ySpaceValue: 8,
+                      widthValue: 80,
+                      heightValue: 110,
+                      bookTitleFontSize: 14,
+                      bookTitleLineHeightSize: 16
+                    }).onClick(() => {
+                      router.pushUrl({
+                        url: "pages/BookDetailPage",
+                        params: {
+                          goods_id: item.goods_id
+                        }
+                      })
+                    })
                   }
-
-                })
-              }.onScrollIndex((start, end) => {
-                console.log("this.page:" + this.page)
-                console.log("page:" + start.toString(), end.toString())
-                //触底条件
-                if (end >= this.page * 8) {
-                  this.page++;
-                  console.log("this.page:" + this.page)
-                  this.getBookList(this.page);
+                  .width("90%")
+                  .height(110)
                 }
-              })
-
-            }
-
-          }
-          .tabBar(this.tabBuilder(this.tabArray[0], 0))
-
-          TabContent() {
-            // 上升榜
-            Column() {
-              List() {
-                ForEach(this.bookList[0], (item: ESObject, index: number) => {
-                  ListItem() {
-                    Row() {
-                      Text((index + 1 < 10 ? "0" : "") + (index + 1).toString())
-                        .fontColor(index + 1 < 4 ? "#d9b964" : "#9da2ab")
-                        .fontSize(18)
-                        .fontWeight(700)
-                      Column() {
-                        BookItemCard({
-                          bookRankItem: [item],
-                          ySpaceValue: 8,
-                          widthValue: 80,
-                          heightValue: 110
-                        })
-                      }
-                      .width("90%")
-                      .height(110)
-
-                    }
-                    .width("100%")
-                    .height(130)
-                    .padding({ left: 20, right: 20 })
-                  }
-                })
-                // ListItem() {
-                //   Text("---------人家是有底线的---------")
-                //     .textAlign(TextAlign.Center)
-                //     .fontSize(18).fontWeight(700)
-                // }
+                .width("100%")
+                .height(130)
+                .padding({ left: 20, right: 20 })
               }
-              .onScrollIndex((start, end) => {
-                console.log("this.page:" + this.page)
-                console.log("page:" + start.toString(), end.toString())
-                //触底条件
-                if (end >= this.page * 5) {
-                  this.page++;
-                  console.log("this.page:" + this.page)
-                  this.getBookList(this.page);
-                }
-              })
-
+            })
+          }.onScrollIndex((start, end) => {
+            console.log("ABC  this.page:" + this.page)
+            console.log("ABC  page:" + start.toString(), end.toString())
+            //触底条件
+            if (end >= this.page * 8) {
+              this.page++;
+              console.log("ABC  this.page:" + this.page)
+              this.getBookList(this.page);
             }
-          }
-          .tabBar(this.tabBuilder(this.tabArray[1], 1))
+          })
+
         }
-        .onChange((index) => {
-          //更新选中的标题
-          this.bookList = []
-          this.currentIndex = index;
-          this.temp = index;
-          console.log(this.temp.toString())
-          this.getBookList(1)
-        })
-        .animationDuration(0)
       }
     }
     .padding({ top: px2vp(this.topRectHeight) })
