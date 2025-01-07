@@ -1,6 +1,6 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { window } from '@kit.ArkUI';
+import { font, window } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 
 export default class EntryAbility extends UIAbility {
@@ -55,6 +55,12 @@ export default class EntryAbility extends UIAbility {
           AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
         }
       });
+
+      // 全局导入字体图标
+      font.registerFont({
+        familyName: 'iconfont',
+        familySrc: $rawfile('iconfont.ttf')
+      })
     });
   }
 
