@@ -6,7 +6,7 @@ export default struct BookItemCard {
   // 书籍数据
   @Prop bookItem?: Array<ESObject> = []
   // 控制是否展示音频相关内容
-  @Prop audioBookItem?: Array<ESObject> = []
+  @Prop bookAudioItem?: Array<ESObject> = []
   // 控制是否展示排行榜列表项
   @Prop bookRankItem?: Array<ESObject> = []
   // 控制书籍简介显示行数
@@ -132,7 +132,7 @@ export default struct BookItemCard {
           .height(this.heightValue)
         }
 
-        if (this.audioBookItem?.length === 1) {
+        if (this.bookAudioItem?.length === 1) {
           // 书籍封面
           Stack() {
             Column()
@@ -143,7 +143,7 @@ export default struct BookItemCard {
                 colors: [["#b0a4a4a4", 0.0], ["#66989898", 0.5], ["#00ffffff", 1.0]]
               })
               .zIndex(999)
-            Image(this.audioBookItem[0].cover_image)
+            Image(this.bookAudioItem[0].cover_image)
               .height(this.heightValue)
               .borderRadius({ topRight: 20 })
               .borderStyle(BorderStyle.Solid)
@@ -161,7 +161,7 @@ export default struct BookItemCard {
 
           Column({ space: this.ySpaceValue }) {
             // 书籍标题
-            Text(this.audioBookItem[0].title)
+            Text(this.bookAudioItem[0].title)
               .fontSize(18)
               .fontWeight(700)
               .lineHeight(24)
@@ -170,33 +170,40 @@ export default struct BookItemCard {
 
             // 展示音频信息
             Row({ space: 10 }) {
-              Text() {
-                ImageSpan($r("app.media.music_clock")).width(15).margin({ right: 3 })
-                Span(`${Math.floor(Number(this.audioBookItem[0].time) / 60)}:${Number(this.audioBookItem[0].time) %
+              Row({ space: 5 }) {
+                Text("\ue6b4")
+                  .fontFamily("iconfont")
+                  .fontSize(14)
+                  .fontColor("#999999")
+                Text(`${Math.floor(Number(this.bookAudioItem[0].time) / 60)}:${Number(this.bookAudioItem[0].time) %
                   60}`)
                   .fontSize(14)
                   .fontColor("#999999")
               }
 
-              Text() {
-                ImageSpan($r("app.media.music_earphone")).width(15).margin({ right: 3 })
-                Span(`${this.audioBookItem[0].play_num}K`)
+              Row({ space: 5 }) {
+                Text("\ue6b5")
+                  .fontFamily("iconfont")
+                  .fontSize(14)
+                  .fontColor("#999999")
+                Text(`${this.bookAudioItem[0].play_num}`)
                   .fontSize(14)
                   .fontColor("#999999")
               }
+
             }
 
             // 作者头像
             if (this.isShowAvatar) {
-              if (this.audioBookItem[0].expert_info.avatar) {
+              if (this.bookAudioItem[0].expert_info.avatar) {
                 AvatarCard({
-                  imgUrl: this.audioBookItem[0].expert_info.avatar,
-                  name: this.audioBookItem[0].expert_info.name
+                  imgUrl: this.bookAudioItem[0].expert_info.avatar,
+                  name: this.bookAudioItem[0].expert_info.name
                 })
               }
             }
           }
-          .width(`${0.65 * this.widthValue!}%`)
+          .width(`${0.9 * this.widthValue!}%`)
           .alignItems(HorizontalAlign.Start)
           .height(this.heightValue)
         }
