@@ -5,6 +5,11 @@ import BookItemCard from '../components/BookItemCard';
 @Entry
 @Component
 struct RankListPage {
+  // 设置沉浸式安全区域
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   @State tabArray: Array<string> = ["月总榜", "月上升榜"]
   @State currentIndex: number = 0
   @State labCategoryArray: Array<ESObject> = []
@@ -98,6 +103,7 @@ struct RankListPage {
   build() {
     // 总页面
     Column() {
+      // title标签
       Column() {
         // age
         Column() {
@@ -207,6 +213,7 @@ struct RankListPage {
       // 分页
       Column() {
         Tabs() {
+          // 总榜
           TabContent() {
             Column() {
               List() {
@@ -258,6 +265,7 @@ struct RankListPage {
           .tabBar(this.tabBuilder(this.tabArray[0], 0))
 
           TabContent() {
+            // 上升榜
             Column() {
               List() {
                 ForEach(this.bookList[0], (item: ESObject, index: number) => {
@@ -316,6 +324,7 @@ struct RankListPage {
         .animationDuration(0)
       }
     }
+    .padding({ top: px2vp(this.topRectHeight) })
 
   }
 }
