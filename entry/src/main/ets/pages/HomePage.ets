@@ -174,7 +174,7 @@ export default struct HomePage {
                   }.width(50).margin(8)
                   .onClick(() => {
                     router.pushUrl({
-                      url: "pages/BookDetailPage",
+                      url: "pages/BookListByLabelPage",
                       params: {
                         id: item.id,
                       }

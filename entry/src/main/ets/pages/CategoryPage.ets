@@ -37,7 +37,7 @@ struct CategoryPage {
                 }.width(55).margin(8)
                 .onClick(() => {
                   router.pushUrl({
-                    url: "pages/BookDetailPage",
+                    url: "pages/BookListByLabelPage",
                     params: {
                       id: icon.id,
                     }

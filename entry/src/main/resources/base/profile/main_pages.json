@@ -6,8 +6,8 @@
     "pages/LoginPage",
     "pages/HomePage",
     "pages/CategoryPage",
-    "pages/BookDetailPage",
     "pages/RankListPage",
-    "pages/UserProfilePage"
+    "pages/UserProfilePage",
+    "pages/BookListByLabelPage"
   ]
 }
