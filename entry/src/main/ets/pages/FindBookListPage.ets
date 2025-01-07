@@ -1,5 +1,6 @@
 import SearchItem from '../components/SearchItem';
 import { http } from '@kit.NetworkKit';
+import router from '@ohos.router';
 import BookListItemCard, { BookListItem } from '../components/BookListItemCard';
 import { LengthMetrics } from '@kit.ArkUI';
 
@@ -39,6 +40,14 @@ export default struct FindBookListPage {
               BookListItemCard({ cardWidthValue: "100%", imageWidthValue: "95%", item })
             }
             .margin({ bottom: 20 })
+            .onClick(() => {
+              router.pushUrl({
+                url: "pages/BookListDetailPage",
+                params: {
+                  id: item.goods_id
+                }
+              })
+            })
           })
         }
       }

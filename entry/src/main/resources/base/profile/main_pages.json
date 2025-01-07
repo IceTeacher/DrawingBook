@@ -9,6 +9,7 @@
     "pages/BookDetailPage",
     "pages/RankListPage",
     "pages/UserProfilePage",
-    "pages/BookListByLabelPage"
+    "pages/BookListByLabelPage",
+    "pages/BookListDetailPage"
   ]
 }
