@@ -177,49 +177,50 @@ struct BookDetailPage {
           .borderColor("#efefef")
 
           //听故事
-          Column() {
-            Text("听故事").fontSize("20").fontWeight(700).fontColor("#404040").margin(20)
-            Row() {
-              Image(this.bookDetail[0].expert_speak_list[0].avatar)
-                .width(50)
-                .borderRadius(50)
-                .margin({ top: 10, left: 20 })
-              Column({ space: 15 }) {
-                Text(this.bookDetail[0].goods_name)
-                  .fontSize(15)
-                  .fontColor("#4d4d4d")
-                  .width("90%")
-                  .maxLines(1)
-                  .textOverflow({ overflow: TextOverflow.Ellipsis })
-                Row({ space: 20 }) {
-                  Row({ space: 5 }) {
-                    Text("\ue6b4")
-                      .fontFamily("iconfont")
-                      .fontSize(14)
-                      .fontColor("#999999")
-                    Text(`${Math.floor(Number(this.bookDetail[0].audio_list[0].time) /
-                      60)}:${Number(this.bookDetail[0].audio_list[0].time) %
-                      60}`)
-                      .fontSize(14)
-                      .fontColor("#999999")
+          if (this.bookDetail[0].audio_list[0]) {
+            Column() {
+              Text("听故事").fontSize("20").fontWeight(700).fontColor("#404040").margin(20)
+              Row() {
+                Image(this.bookDetail[0].expert_speak_list[0].avatar)
+                  .width(50)
+                  .borderRadius(50)
+                  .margin({ top: 10, left: 20 })
+                Column({ space: 15 }) {
+                  Text(this.bookDetail[0].goods_name)
+                    .fontSize(15)
+                    .fontColor("#4d4d4d")
+                    .width("90%")
+                    .maxLines(1)
+                    .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  Row({ space: 20 }) {
+                    Row({ space: 5 }) {
+                      Text("\ue6b4")
+                        .fontFamily("iconfont")
+                        .fontSize(14)
+                        .fontColor("#999999")
+                      Text(`${Math.floor(Number(this.bookDetail[0].audio_list[0].time) /
+                        60)}:${Number(this.bookDetail[0].audio_list[0].time) %
+                        60}`)
+                        .fontSize(14)
+                        .fontColor("#999999")
+                    }
+
+                    Row({ space: 5 }) {
+                      Text("\ue6b5")
+                        .fontFamily("iconfont")
+                        .fontSize(14)
+                        .fontColor("#999999")
+                      Text(`${this.bookDetail[0].audio_list[0].play_num}`)
+                        .fontSize(14)
+                        .fontColor("#999999")
+                    }
                   }
+                }.width("60%").alignItems(HorizontalAlign.Start).margin({ left: 20 })
 
-                  Row({ space: 5 }) {
-                    Text("\ue6b5")
-                      .fontFamily("iconfont")
-                      .fontSize(14)
-                      .fontColor("#999999")
-                    Text(`${this.bookDetail[0].audio_list[0].play_num}`)
-                      .fontSize(14)
-                      .fontColor("#999999")
-                  }
-                }
-              }.width("60%").alignItems(HorizontalAlign.Start).margin({ left: 20 })
-
-              Button("播放").backgroundColor("#ff7b68").margin({ left: -20 })
-            }.margin({ bottom: 20 })
-          }.alignItems(HorizontalAlign.Start).width("100%").backgroundColor("white").margin({ top: 20 })
-
+                Button("播放").backgroundColor("#ff7b68").margin({ left: -20 })
+              }.margin({ bottom: 20 })
+            }.alignItems(HorizontalAlign.Start).width("100%").backgroundColor("white").margin({ top: 20 })
+          }
 
           //评论
           Column() {
