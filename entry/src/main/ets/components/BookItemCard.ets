@@ -25,6 +25,10 @@ export default struct BookItemCard {
   @Prop isShowLabel?: boolean = false
   // 控制是否展示头像
   @Prop isShowAvatar?: boolean = true
+  // 控制书籍标题的字体大小
+  @Prop bookTitleFontSize?: number = 18
+  // 控制书籍标题的行高
+  @Prop bookTitleLineHeightSize?: number = 24
 
   // 书籍简介子组件
   @Builder
@@ -88,9 +92,9 @@ export default struct BookItemCard {
           Column({ space: this.ySpaceValue }) {
             // 书籍标题
             Text(this.bookItem[0].goods_name)
-              .fontSize(18)
+              .fontSize(this.bookTitleFontSize)
               .fontWeight(700)
-              .lineHeight(24)
+              .lineHeight(this.bookTitleLineHeightSize)
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
 
@@ -162,9 +166,9 @@ export default struct BookItemCard {
           Column({ space: this.ySpaceValue }) {
             // 书籍标题
             Text(this.bookAudioItem[0].title)
-              .fontSize(18)
+              .fontSize(this.bookTitleFontSize)
               .fontWeight(700)
-              .lineHeight(24)
+              .lineHeight(this.bookTitleLineHeightSize)
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
 
@@ -238,9 +242,9 @@ export default struct BookItemCard {
           Column({ space: this.ySpaceValue }) {
             // 书籍标题
             Text(this.bookRankItem[0].goods_name)
-              .fontSize(18)
+              .fontSize(this.bookTitleFontSize)
               .fontWeight(700)
-              .lineHeight(24)
+              .lineHeight(this.bookTitleLineHeightSize)
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
 
