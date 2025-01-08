@@ -37,7 +37,12 @@ export default struct FindBookListPage {
         Flex({ direction: FlexDirection.Column, space: { cross: LengthMetrics.vp(15) } }) {
           ForEach(this.necessaryGoodsBookList, (item: BookListItem) => {
             Row() {
-              BookListItemCard({ cardWidthValue: "100%", imageWidthValue: "95%", item })
+              BookListItemCard({
+                cardWidthValue: "100%",
+                cardHeightValue: 380,
+                imageWidthValue: "95%",
+                item
+              })
             }
             .margin({ bottom: 20 })
             .onClick(() => {

@@ -27,6 +27,7 @@ export interface BookListItem {
   attribute_age: AttributeAge[]
   tag_age: string
   expert: Expert
+  expert_info?: Expert
 }
 
 interface Gallery {
@@ -53,6 +54,7 @@ interface Expert {
 @Component
 export default struct BookListItemCard {
   @Prop cardWidthValue: string
+  @Prop cardHeightValue?: number = 340
   @Prop imageWidthValue: string
   @Prop item: BookListItem
 
@@ -74,22 +76,27 @@ export default struct BookListItemCard {
       .width("100%")
 
       Row() {
-        Text(this.item.expert_description)
+        Text(this.item.expert_info ? this.item.expert_info.expert_introduction : this.item.expert_description)
           .fontSize(14)
           .fontColor("#666666")
           .lineHeight(24)
-          .maxLines(3)
+          .maxLines(this.item.expert_info ? 2 : 3)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
       }
       .width("100%")
 
       Row() {
-        AvatarCard({ imgUrl: this.item.expert.avatar, name: this.item.expert.name })
+        AvatarCard({
+          imgUrl: this.item.expert ? this.item.expert.avatar : this.item.expert_info?.avatar,
+          name: this.item.expert ? this.item.expert.name : this.item.expert_info?.name,
+          masterId: this.item.expert ? this.item.expert.id : this.item.expert_info?.id,
+        })
       }
       .width("100%")
       .justifyContent(FlexAlign.Start)
     }
     .width(this.cardWidthValue)
+    .height(this.cardHeightValue)
     .padding(20)
     .borderRadius(15)
     .borderStyle(BorderStyle.Solid)
