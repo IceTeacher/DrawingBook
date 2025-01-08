@@ -18,6 +18,7 @@ struct BookDetailPage {
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  @State more: number = 0
   @State bookDetail: Array<ESObject> = []
   @State bookRecommend: Array<ESObject> = []
   @State flag: number = 1
@@ -39,6 +40,7 @@ struct BookDetailPage {
     let params: ESObject = router.getParams() as ESObject;
     let httpObject = http.createHttp();
     let url = "https://van.mama.cn/hb/api/goods/getGoodsDetail?goods_id=" + params.id
+    this.more = params.id
     let res = await httpObject.request(url)
     res = JSON.parse(res["result"] as string);
     let bookDetail: Array<ESObject> = res["data"];
@@ -471,44 +473,73 @@ struct BookDetailPage {
 
             //评论
             Column() {
-              Text("读过的用户怎么说").fontSize("18").fontWeight(700).fontColor("#404040")
-              ForEach(this.bookRecommend, (item: ESObject, index) => {
-                if (index < 5) {
-                  Column() {
-                    Row({ space: 10 }) {
-                      Image(item.user_info.avatar).width(35).height(35).objectFit(ImageFit.Cover).borderRadius(50)
-                      Column() {
-                        Text(item.user_info.username).fontWeight(700).fontSize(16)
-                        Text(item.user_info.birthday_title).fontColor("#999999").fontSize(14)
-                        Text(item.message).fontColor("#666666").fontSize(14).margin({ top: 20 })
-                        Row({ space: 140 }) {
-                          Text(item.show_time).fontColor("#999999").fontSize(14)
-                          Text("回复").fontColor("#999999").fontSize(14)
-                        }.margin({ top: 15 })
-                      }
-                      .alignItems(HorizontalAlign.Start)
-                      .justifyContent(FlexAlign.Center)
-                    }
-                    .alignItems(VerticalAlign.Top)
-                  }.height(150).borderWidth({ bottom: 1 }).borderColor("#f8f8f8").padding({ top: 15 })
-                }
-                if (index >= 5) {
-                  Row() {
-                    Text("展示更多评论....").fontColor("#5cd3b4")
-                  }
+              Row({ space: 130 }) {
+                Text("读过的用户怎么说").fontSize("18").fontWeight(700).fontColor("#404040").textAlign(TextAlign.Start)
+                Text("写下评论")
+                  .fontWeight(700)
+                  .borderWidth(1)
+                  .borderColor("#f2f2f2")
+                  .backgroundColor("#fff")
+                  .fontColor("#5cd3b4")
+                  .padding(5)
+                  .borderRadius(15)
                   .onClick(() => {
                     router.pushUrl({
-                      url: "pages/MoreCommentPage"
+                      url: "pages/LoginPage"
                     })
                   })
-                }
-              })
+              }
 
+              if (this.bookRecommend[0]) {
+                ForEach(this.bookRecommend, (item: ESObject, index) => {
+                  if (index < 6) {
+                    Column() {
+                      Row({ space: 10 }) {
+                        Image(item.user_info.avatar).width(35).height(35).objectFit(ImageFit.Cover).borderRadius(50)
+                        Column() {
+                          Text(item.user_info.username).fontWeight(700).fontSize(16)
+                          Text(item.user_info.birthday_title).fontColor("#999999").fontSize(14)
+                          Text(item.message)
+                            .fontColor("#666666")
+                            .fontSize(14)
+                            .margin({ top: 20 })
+                            .maxLines(2)
+                            .textOverflow({ overflow: TextOverflow.Ellipsis })
+                          Row({ space: 140 }) {
+                            Text(item.show_time).fontColor("#999999").fontSize(14)
+                            Text("回复").fontColor("#999999").fontSize(14)
+                          }.margin({ top: 15 })
+                        }
+                        .alignItems(HorizontalAlign.Start)
+                        .justifyContent(FlexAlign.Center)
+                      }
+                      .alignItems(VerticalAlign.Top)
+                    }.height(150).borderWidth({ bottom: 1 }).borderColor("#f8f8f8").padding({ top: 15 })
+                  }
+                  if (index == 5) {
+                    Column() {
+                      Row() {
+                        Text("查看更多评论 >").fontColor("#5cd3b4")
+                      }
+                    }.alignItems(HorizontalAlign.Center).margin({ top: 20 })
+                    .onClick(() => {
+                      router.pushUrl({
+                        url: "pages/MoreCommentPage",
+                        params: {
+                          id: this.more
+                        }
+                      })
+                    })
+                  }
+                })
+              } else {
+                TextInput({ placeholder: '说两句吧~~' }).width("90%").margin(20)
+              }
             }
             .margin({ top: 10 })
             .width("100%")
             .backgroundColor("white")
-            .alignItems(HorizontalAlign.Start)
+            .alignItems(HorizontalAlign.Center)
             .padding({
               top: 15,
               bottom: 15,

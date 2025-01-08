@@ -10,6 +10,7 @@
     "pages/RankListPage",
     "pages/UserProfilePage",
     "pages/BookListByLabelPage",
-    "pages/BookListDetailPage"
+    "pages/BookListDetailPage",
+    "pages/MoreCommentPage"
   ]
 }
