@@ -227,6 +227,14 @@ export default struct HomePage {
               Flex({ wrap: FlexWrap.NoWrap, space: { main: LengthMetrics.vp(15) } }) {
                 ForEach(this.necessaryGoodsBookList, (item: BookListItem) => {
                   BookListItemCard({ cardWidthValue: "80%", imageWidthValue: "90%", item })
+                    .onClick(() => {
+                      router.pushUrl({
+                        url: "pages/BookListDetailPage",
+                        params: {
+                          id: item.goods_id
+                        }
+                      })
+                    })
                 })
               }
             }

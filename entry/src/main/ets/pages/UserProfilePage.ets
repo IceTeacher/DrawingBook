@@ -185,6 +185,13 @@ struct UserProfilePage {
                         cardHeightValue: 320,
                         imageWidthValue: "90%",
                         item
+                      }).onClick(() => {
+                        router.pushUrl({
+                          url: "pages/BookListDetailPage",
+                          params: {
+                            id: item.goods_id
+                          }
+                        })
                       })
                     })
                   }
