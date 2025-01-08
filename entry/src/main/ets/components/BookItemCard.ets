@@ -130,7 +130,7 @@ export default struct BookItemCard {
                   AvatarCard({
                     imgUrl: this.bookItem[0].expert_speak_info.avatar,
                     name: this.bookItem[0].expert_speak_info.name,
-                    masterId: this.bookItem[0].expert_speak_info.id
+                    masterId: this.bookItem[0].expert_speak_info.expert_id
                   })
                 }
               }

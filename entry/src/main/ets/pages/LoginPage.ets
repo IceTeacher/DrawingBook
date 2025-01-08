@@ -11,7 +11,7 @@ export default struct LoginPage {
       Column() {
         Image($r("app.media.loginPic"))
           .width("50%")
-          .height(140)
+          .height(180)
         Text("欢迎来到妈妈网")
           .fontSize(20)
           .fontColor("#ff7c7979")
@@ -71,6 +71,7 @@ export default struct LoginPage {
 
       }
     }
+    .margin({ top: 20 })
     .height('100%')
     .width('100%')
   }

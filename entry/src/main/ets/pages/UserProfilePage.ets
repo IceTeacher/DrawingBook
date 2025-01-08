@@ -234,10 +234,21 @@ struct UserProfilePage {
               .alignItems(HorizontalAlign.Start)
             }
           }
+          if (this.bookItem.length == 0 && this.bookList.length == 0) {
+            Column() {
+              Text("-----这是一个神秘的人-----")
+                .fontSize(12)
+                .fontWeight(600)
+                .fontColor("#ff7e7c7c")
+                .textAlign(TextAlign.Center)
+                .margin({ top: 30 })
+                .width(300)
+            }.alignItems(HorizontalAlign.Start)
+            .width("100%")
+          }
         }.alignItems(HorizontalAlign.Start)
       }
-
-      .margin({ top: 20 })
+      .margin({ top: 30 })
 
     }
 

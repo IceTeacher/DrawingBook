@@ -33,6 +33,7 @@ export default struct AvatarCard {
         .fontSize(14)
         .fontColor("#4d4d4d")
     }.onClick(() => {
+      console.log("触发了点击avatar跳转事件")
       router.pushUrl({
         url: "pages/UserProfilePage",
         params: {

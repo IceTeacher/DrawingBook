@@ -151,6 +151,15 @@ export default struct HomePage {
                     offsetX: 25,
                     offsetY: 25
                   })
+                  //有问题
+                  .onClick(() => {
+                    router.pushUrl({
+                      url: "pages/BookDetailPage",
+                      params: {
+                        id: item.goods_id
+                      }
+                    })
+                  })
                 })
               }
             }
