@@ -295,8 +295,8 @@ export default struct BookListPage {
               this.currentPlayAudioItemState.playMode = false
               this.currentPlayAudioItemState.isShowPlayBar = false
               // 销毁音频对象
-              this.avPlayer.pause()
-              this.avPlayer.release()
+              this.avPlayer?.pause()
+              this.avPlayer?.release()
             })
           Text("英语")
             .width(50)
@@ -320,8 +320,8 @@ export default struct BookListPage {
               this.currentPlayAudioItemState.playMode = false
               this.currentPlayAudioItemState.isShowPlayBar = false
               // 销毁音频对象
-              this.avPlayer.pause()
-              this.avPlayer.release()
+              this.avPlayer?.pause()
+              this.avPlayer?.release()
             })
         }
 
