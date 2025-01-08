@@ -225,6 +225,14 @@ struct UserProfilePage {
                 Column() {
                   ForEach(this.bookItem, (item: ESObject) => {
                     BookItemCard({ bookItem: [item], descMaxLines: 3 })
+                      .onClick(() => {
+                        router.pushUrl({
+                          url: "pages/BookDetailPage",
+                          params: {
+                            id: item.goods_id
+                          }
+                        })
+                      })
                   })
                 }
                 .width("100%")

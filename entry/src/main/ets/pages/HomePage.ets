@@ -343,6 +343,14 @@ export default struct HomePage {
                 ForEach(this.talentGoodsList, (item: ESObject) => {
                   ListItem() {
                     BookItemCard({ bookItem: [item], descMaxLines: 3 })
+                      .onClick(() => {
+                        router.pushUrl({
+                          url: "pages/BookDetailPage",
+                          params: {
+                            id: item.goods_id
+                          }
+                        })
+                      })
                   }
                 })
               }
