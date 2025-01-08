@@ -40,7 +40,7 @@ struct RankListPage {
   aboutToAppear(): void {
     // 接收参数
     let params: ESObject = router.getParams() as ESObject;
-    this.paramsArray[0] = (params.attr_val_id)
+    this.paramsArray[0] = (params.attr_val_id == 668 ? "&" : params.attr_val_id)
     this.paramsArray[1] = ""
     this.currentAgeIndex = params.attr_val_id - 669 + 1
     this.getCategoryLab();

@@ -39,7 +39,7 @@ struct Index {
 
         // 找书单
         TabContent() {
-          FindBookListPage()
+          FindBookListPage({ marginFlag: false })
         }
         .tabBar(this.tabBuilder("找书单", 1, $r("app.media.FindBookListPage_on"), $r("app.media.FindBookListPage_off")))
 

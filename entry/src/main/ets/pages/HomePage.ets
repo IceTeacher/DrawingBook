@@ -226,6 +226,12 @@ export default struct HomePage {
               Text("37个书单 >")
                 .fontSize(14)
                 .fontColor("#999999")
+                .onClick(() => {
+                  router.pushUrl({
+                    url: "pages/FindBookListPage",
+                  })
+
+                })
             }
             .width("100%")
             .padding({ left: 20, right: 20 })
@@ -266,6 +272,14 @@ export default struct HomePage {
               Text("详细榜单 >")
                 .fontSize(14)
                 .fontColor("#999999")
+                .onClick(() => {
+                  router.pushUrl({
+                    url: "pages/RankListPage",
+                    params: {
+                      attr_val_id: 668
+                    }
+                  })
+                })
             }
             .width("100%")
             .padding({ left: 20, right: 20 })

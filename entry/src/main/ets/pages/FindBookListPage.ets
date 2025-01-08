@@ -7,8 +7,14 @@ import { LengthMetrics } from '@kit.ArkUI';
 @Entry
 @Component
 export default struct FindBookListPage {
+  // 设置沉浸式安全区域
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   // 达人书单状态
   @State necessaryGoodsBookList: Array<ESObject> = []
+  @Prop marginFlag: boolean = true
 
   // 请求达人书单方法
   async getNecessaryGoodsBookList() {
@@ -61,5 +67,6 @@ export default struct FindBookListPage {
     }
     .height('100%')
     .width('100%')
+    .padding(this.marginFlag ? { top: px2vp(this.topRectHeight), bottom: px2vp(this.bottomRectHeight) } : "")
   }
 }
