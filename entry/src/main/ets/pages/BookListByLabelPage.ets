@@ -14,17 +14,25 @@ struct BookListByLabelPage {
   @State bookListByLabel: Array<string> = []
   @State page: number = 1
   @State canLoad: boolean = true
+  @State url: string = ""
 
   // 请求达人精选方法
   async getBookListByLabel(page: number) {
     this.canLoad = false
     let params: ESObject = router.getParams() as ESObject;
     let httpObject = http.createHttp();
-    let url =
-      "https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=" +
+    if (params.id < 674) {
+      this.url =
+        "https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=" +
+          (page * 10 - 1) + "&attr_val_id=" +
+        params.id
+    } else {
+      this.url = "https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=" +
         (page * 10 - 1) + "&tag_id=" +
       params.id
-    let res = await httpObject.request(url)
+    }
+
+    let res = await httpObject.request(this.url)
     res = JSON.parse(res["result"] as string)
     let bookList: Array<ESObject> = res["data"]["list"]
     this.bookListByLabel.push(...bookList)
