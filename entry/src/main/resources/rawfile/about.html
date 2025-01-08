@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Document</title>
+    <link href="./reset.css" rel="stylesheet">
+    <style>
+        p {
+          color: #666666;
+          line-height: 1.5;
+        }
+
+        img {
+          width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app"></div>
+</body>
+
+<script>
+    let aboutInfo = app.getAboutInfo();
+    document.querySelector("#app").innerHTML = aboutInfo.goods_desc;
+</script>
+
+</html>

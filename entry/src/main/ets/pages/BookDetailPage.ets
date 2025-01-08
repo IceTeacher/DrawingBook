@@ -2,6 +2,7 @@ import { http } from '@kit.NetworkKit';
 import router from '@ohos.router';
 import { media } from '@kit.MediaKit';
 import { LengthMetrics } from '@kit.ArkUI';
+import { webview } from '@kit.ArkWeb';
 
 // 当前播放内容的状态记录的类型
 interface CurrentPlayAudioItemState {
@@ -18,6 +19,9 @@ struct BookDetailPage {
   bottomRectHeight: number = 0;
   @StorageProp('topRectHeight')
   topRectHeight: number = 0;
+  //web组件控制器
+  descWebController: webview.WebviewController = new webview.WebviewController()
+  aboutWebController: webview.WebviewController = new webview.WebviewController()
   @State more: number = 0
   @State bookDetail: Array<ESObject> = []
   @State bookRecommend: Array<ESObject> = []
@@ -458,6 +462,120 @@ struct BookDetailPage {
                   // 播放按钮
                   this.PlayAudioButton(this.bookDetail[0].audio_list[0])
                 }
+              }
+              .margin({ top: 10 })
+              .padding({
+                top: 15,
+                bottom: 15,
+                left: 20,
+                right: 20
+              })
+              .alignItems(HorizontalAlign.Start)
+              .width("100%")
+              .backgroundColor("white")
+            }
+
+            // 达人怎么说
+            if (this.bookDetail[0].expert_speak_list[0]) {
+              Column() {
+                // 标题
+                Text("达人怎么说").fontSize("18").fontWeight(700).fontColor("#404040").margin({ bottom: 15 })
+
+                // 展示卡片
+                Column({ space: 20 }) {
+                  // 头像
+                  Row({ space: 10 }) {
+                    Image(this.bookDetail[0].expert_speak_list[0].avatar)
+                      .width(40)
+                      .height(40)
+                      .objectFit(ImageFit.Cover)
+                      .borderRadius(50)
+                    Column({ space: 3 }) {
+                      Text() {
+                        Span(`${this.bookDetail[0].expert_speak_list[0].name}  `)
+                        ImageSpan("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAAXNSR0IArs4c6QAABUpJREFUSA2VVk1MXFUUPvfNAKVIsSGaFkocrErUuGBBQkwqLlpNTGxJIF2wcG2MG/eNKxI3Jm6MujKmC6JNMbRpdIELGzY0jaFWasU2QEuh0XbKz1AGZt671++7fx3An3rmzXvnnnvO951z7n0zV8ljyMMrn3dXdNYvWh/ROm3XqW4TkwnGS0b0ojHZhDIy9nTfh1P/Baf+zaF07ctBXa0Ma627SGCyDBwgMhoXxjo8vS5mRpn01MGjH539J9y/JSz/drqzmmUjkqW9BEVVrEYMiDRIAyHtnLdj2JmETUjMZF6yoQNvfjy3kzjZaSjfGOlLtbmMyF7OGXwUPoa6gY4U+aTQbjPmkAq+yjn0plouL3z3QR/9amUbYfnGmT6dZuOAbGWgg3XuHFtwDGtJOcuknDNifDKwtEIdXzi/nTQSlufPdKJFo0Cti0yIqq0uJEBMW4nLxepujh3wacEA8jqjstH58+93eleJhFI1I6zMgbmEbSVgJ0TAYWDQQwJM0NqsIVj9UhhpRQiwnVjCrdnRQbTFrpkzgwLMIZS2UBVbRp3CRJyKu7u8lbM1YqT31th7g7TkecO7NOxWyK1b04vv0LxLss1lWb36lWXSntWR4o7ricJrsu+5N2Lc+sIleXCFjQODmGFMnE0q8+e6Me5iPfyEdsWoGiW3Z7+ouiZXrbf7YqW+pSDNh49G78rqoixPj7oxQbXpmj/3bncevxL9LkvOcZeJlG//gKy0qIb9sudATwShUtfcLtnmmvNlgtTqm6Tl5UEk67aErpalOHUaJHh/6aCZFrAz6U9AfsQNHS2TydYXJS3dkcr9afAiqEbyzYd8F9ymIFDLSwOSa2i2Xlzj5avfSFYu1kRBtfDZkcQY1c4ZttNZ3cO+d0gpXV/idJT8vkNWpzelqfC61D9ZsDpv63M/yub969DIAAmOVJW0JyihzU/ZzNlSOtkHbunabYZFyTdil+f2Ak5J/f7Dsrfj1Ti39WBWSjfHsSwexLPFd1OrNtd0H0LHsGmYBPW0tBABg1LfckiShn3S3PU2fFy62daarPzytS3M2WD3cy4BRKOfiagEfzG7JVSoK2vYJMvbHOrQwuYXTkiSb7R2/mivTGPdqhs1fkCwlcJEYqffxaYxiy5H+rpdatfP+9Gart7iI0rDU69gtx6M49LsuFRWF0JB0b7TgP/MRRY5ESpkIi4ZbCFkZO24VXesY2gjkTf/vCblO5fsmjLhbRKAWZ0Dn0CFaiy4WRJMco4391B2p5qssg2Lg3Tjvqz9fsGB0cAkCR7EAoQB3HJqLKkvnJgC8kz4aWP2NsYHsk5YdlXJBNauf4uXuuq2tAevrd62iPy2ApkpnPhiyu5SAJ5ywH5tEWyJHyW36/Uo3fw+vty2+bYwJusrdCQRAa08xYElbHj2JM4gajIm42OYISvnsLIyH8HKd3+SSnEmgj1KjsvBUiEIsom44eQz/Z/Zc058D1WdGoJLkQkyhiTuyZZCsg1c96RaWpKN2xdpsT5BsTwMilbG4WOkiAewnUTCxsLJuSRRAwDHopDR5hf87LpWir/K+o0L+HHCwQnCRCwH7+7yVs5ClFSV5AYKxz+dcwbf0jBofH7oYpLPHUNska0hIAVjW+3WHz+LSR/GyjnnfHDn5QNclxQw5FjH8U8u0i9IrDAYSJpPVA+CJoONOAQhMcUCOjXabIXeQSVqMp9IT8db28kY4nPy0TsePAibtDqMs2hX7QE4nE1rz6s8JON/HQfh7P8fhHfwyjKO+jgB9wPUHvXxh9pm/ye1WcLv6GJm0omcSh7rqP8Xqb+9ofyl6lUAAAAASUVORK5CYII=")
+                          .width(18)
+                      }
+                      .fontSize(16)
+                      .fontWeight(700)
+                      .fontColor("#4d4d4d")
+
+                      Text(this.bookDetail[0].expert_speak_list[0].user_title)
+                        .fontSize(14)
+                        .fontColor("#999999")
+                    }
+                    .alignItems(HorizontalAlign.Start)
+                  }
+
+                  // 标题
+                  Text(this.bookDetail[0].expert_speak_list[0].title)
+                    .fontSize(18)
+                    .fontWeight(700)
+                    .fontColor("#404040")
+                    .maxLines(2)
+                    .textOverflow({ overflow: TextOverflow.Ellipsis })
+
+                  // 富文本
+                  Web({ src: $rawfile("desc.html"), controller: this.descWebController })
+                    .layoutMode(WebLayoutMode.FIT_CONTENT)
+                    .javaScriptAccess(true)
+                    .javaScriptProxy({
+                      //信息对象
+                      object: {
+                        getDescInfo: () => {
+                          return this.bookDetail[0].expert_speak_list as Array<ESObject>
+                        }
+                      },
+                      name: "app",
+                      //白名单 在此配置的属性 才能被H5访问
+                      methodList: ["getDescInfo"],
+                      controller: this.descWebController
+                    })
+                }
+                .alignItems(HorizontalAlign.Start)
+                .width("100%")
+                .padding(20)
+                .borderRadius(5)
+                .shadow({
+                  radius: 10,
+                  color: "#5ccbcbcb",
+                })
+                .backgroundColor("white")
+              }
+              .margin({ top: 10 })
+              .padding({
+                top: 15,
+                bottom: 15,
+                left: 20,
+                right: 20
+              })
+              .alignItems(HorizontalAlign.Start)
+              .width("100%")
+              .backgroundColor("#fcfcfc")
+            }
+
+            // 简介
+            if (this.bookDetail[0].goods_desc) {
+              Column() {
+                // 标题
+                Text("简介").fontSize("18").fontWeight(700).fontColor("#404040").margin({ bottom: 15 })
+
+                // 富文本
+                Web({ src: $rawfile("about.html"), controller: this.aboutWebController })
+                  .layoutMode(WebLayoutMode.FIT_CONTENT)
+                  .javaScriptAccess(true)
+                  .javaScriptProxy({
+                    //信息对象
+                    object: {
+                      getAboutInfo: () => {
+                        return this.bookDetail[0] as Array<ESObject>
+                      }
+                    },
+                    name: "app",
+                    //白名单 在此配置的属性 才能被H5访问
+                    methodList: ["getAboutInfo"],
+                    controller: this.aboutWebController
+                  })
               }
               .margin({ top: 10 })
               .padding({
