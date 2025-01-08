@@ -17,9 +17,11 @@ export default struct AvatarCard {
           .width(30)
           .borderRadius(40)
           .shadow({
-            radius: vp2px(5),
-            color: "#958f8f8f",
-            fill: true
+            radius: vp2px(10),
+            color: "#458f8f8f",
+            fill: true,
+            offsetX: 15,
+            offsetY: 15
           })
         Image($r("app.media.userV"))
           .width(18)
