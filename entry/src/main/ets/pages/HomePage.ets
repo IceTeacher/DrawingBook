@@ -183,8 +183,8 @@ export default struct HomePage {
                 }
                 if (index == 9) {
                   Column() {
-                    Image(item.image).width(40)
-                    Text(item.name).fontSize(12).fontColor("#808080")
+                    Image($r('app.media.more')).width(30).margin(5)
+                    Text("更多").fontSize(12).fontColor("#808080")
                   }.width(50).margin(8)
                   .onClick(() => {
                     router.pushUrl({
