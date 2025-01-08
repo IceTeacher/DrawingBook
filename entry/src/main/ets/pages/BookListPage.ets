@@ -376,6 +376,7 @@ export default struct BookListPage {
                   widthValue: 80,
                   heightValue: 100,
                   ySpaceValue: 10,
+                  bookTitleFontSize: 16
                 })
 
                 // 播放按钮
