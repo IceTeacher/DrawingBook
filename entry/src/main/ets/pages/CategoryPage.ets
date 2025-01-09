@@ -4,6 +4,11 @@ import router from '@ohos.router';
 @Entry
 @Component
 struct CategoryPage {
+  // 设置沉浸式安全区域
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
   @State category: Array<ESObject> = []
 
   async getCategory() {
@@ -48,8 +53,8 @@ struct CategoryPage {
           }.alignItems(HorizontalAlign.Start)
         })
       }
-
+      .padding({ bottom: px2vp(this.bottomRectHeight) })
     }
-
+    .padding({ top: px2vp(this.topRectHeight) })
   }
 }
