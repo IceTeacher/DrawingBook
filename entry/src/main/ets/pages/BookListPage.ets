@@ -61,6 +61,15 @@ export default struct BookListPage {
     this.getBookAudioList(0, 1)
   }
 
+  // 生命周期钩子，页面隐藏时
+  onPageHide(): void {
+    // 销毁音频对象
+    this.avPlayer?.pause()
+    this.avPlayer?.release()
+    this.currentPlayAudioItemState.playMode = false
+    this.currentPlayAudioItemState.isShowPlayBar = false
+  }
+
   // 创建音频对象
   async createAvPlayer(url: string) {
     //切换资源时 销毁之前的音频对象
@@ -385,6 +394,11 @@ export default struct BookListPage {
               .alignItems(VerticalAlign.Center)
             }
             .onClick(() => {
+              // 销毁音频对象
+              this.avPlayer?.pause()
+              this.avPlayer?.release()
+              this.currentPlayAudioItemState.playMode = false
+              this.currentPlayAudioItemState.isShowPlayBar = false
               router.pushUrl({
                 url: "pages/BookDetailPage",
                 params: {
