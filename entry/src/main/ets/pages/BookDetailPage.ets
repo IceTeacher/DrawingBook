@@ -3,6 +3,7 @@ import router from '@ohos.router';
 import { media } from '@kit.MediaKit';
 import { LengthMetrics } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
+import LoadingItem from '../components/LoadingItem';
 
 // 当前播放内容的状态记录的类型
 interface CurrentPlayAudioItemState {
@@ -22,6 +23,16 @@ struct BookDetailPage {
   //web组件控制器
   descWebController: webview.WebviewController = new webview.WebviewController()
   aboutWebController: webview.WebviewController = new webview.WebviewController()
+  // scroller滚动控制器
+  scroller: Scroller = new Scroller()
+  // 更多绘本或推荐书单列表
+  @State recommendGoodsList: Array<ESObject> = []
+  // 更多绘本或推荐书单列表状态
+  @State recommendGoodsListState: number = 1
+  // 更多绘本或推荐书单列表的页数
+  @State recommendGoodsListPage: number = 0
+  // 控制是否显示加载组件
+  @State isShowLoading: boolean = true
   @State more: number = 0
   @State bookDetail: Array<ESObject> = []
   @State bookRecommend: Array<ESObject> = []
@@ -62,10 +73,28 @@ struct BookDetailPage {
     this.bookRecommend = bookRecommend;
   }
 
+  // 获取更多绘本或推荐书单
+  async getRecommendGoodsList() {
+    let httpObject = http.createHttp();
+    let url =
+      `https://van.mama.cn/hb/api/goods/getRecommendGoodsList?goods_type=1&goods_position=${this.recommendGoodsListPage}&goods_own_type=${this.recommendGoodsListState}&attr_age_val_ids=671,672&perpage=10&sign=&uid=`
+    let res = await httpObject.request(url)
+    const recommendGoodsListRes: Array<ESObject> = JSON.parse(res["result"] as string)["data"]["list"]
+    if (this.recommendGoodsListPage !== 0) {
+      this.recommendGoodsList.push(...recommendGoodsListRes)
+    } else {
+      this.recommendGoodsList = recommendGoodsListRes
+    }
+    console.log("更多绘本或推荐书单", JSON.stringify(JSON.parse(res["result"] as string)["data"]["list"]))
+    this.isShowLoading = false
+    httpObject.destroy();
+  }
+
   // 生命周期钩子，页面创建时，build构建前
   aboutToAppear(): void {
     this.getBookDetail()
     this.getBookRecommend()
+    this.getRecommendGoodsList()
   }
 
   // 生命周期钩子，返回按钮触发时
@@ -73,6 +102,8 @@ struct BookDetailPage {
     // 销毁音频对象
     this.avPlayer?.pause()
     this.avPlayer?.release()
+    this.currentPlayAudioItemState.playMode = false
+    this.currentPlayAudioItemState.isShowPlayBar = false
   }
 
   // 创建音频对象
@@ -256,7 +287,7 @@ struct BookDetailPage {
 
   build() {
     Stack() {
-      Scroll() {
+      Scroll(this.scroller) {
         Column() {
           if (this.bookDetail.length == 1) {
             //顶部标题
@@ -602,6 +633,11 @@ struct BookDetailPage {
                   .padding(5)
                   .borderRadius(15)
                   .onClick(() => {
+                    // 销毁音频对象
+                    this.avPlayer?.pause()
+                    this.avPlayer?.release()
+                    this.currentPlayAudioItemState.playMode = false
+                    this.currentPlayAudioItemState.isShowPlayBar = false
                     router.pushUrl({
                       url: "pages/LoginPage"
                     })
@@ -641,6 +677,11 @@ struct BookDetailPage {
                       }
                     }.alignItems(HorizontalAlign.Center).margin({ top: 20 })
                     .onClick(() => {
+                      // 销毁音频对象
+                      this.avPlayer?.pause()
+                      this.avPlayer?.release()
+                      this.currentPlayAudioItemState.playMode = false
+                      this.currentPlayAudioItemState.isShowPlayBar = false
                       router.pushUrl({
                         url: "pages/MoreCommentPage",
                         params: {
@@ -665,9 +706,196 @@ struct BookDetailPage {
               right: 20
             })
 
+            // 更多绘本和推荐书单
+            Column({ space: 15 }) {
+              // 标题
+              Row({ space: 20 }) {
+                Column({ space: 5 }) {
+                  Text("更多绘本")
+                    .fontSize("18")
+                    .fontWeight(this.recommendGoodsListState === 1 ? 700 : 0)
+                    .fontColor(this.recommendGoodsListState === 1 ? "#404040" : "#999999")
+                  Row().width(18).height(4).backgroundColor(this.recommendGoodsListState === 1 ? "#5cd3b4" : "white")
+                }
+                .width(80)
+                .onClick(() => {
+                  this.recommendGoodsListPage = 0
+                  this.recommendGoodsListState = 1
+                  this.isShowLoading = true
+                  this.getRecommendGoodsList()
+                })
+
+                Column({ space: 5 }) {
+                  Text("推荐书单")
+                    .fontSize("18")
+                    .fontWeight(this.recommendGoodsListState === 2 ? 700 : 0)
+                    .fontColor(this.recommendGoodsListState === 2 ? "#404040" : "#999999")
+                  Row().width(18).height(4).backgroundColor(this.recommendGoodsListState === 2 ? "#5cd3b4" : "white")
+                }
+                .width(80)
+                .onClick(() => {
+                  this.recommendGoodsListPage = 0
+                  this.recommendGoodsListState = 2
+                  this.isShowLoading = true
+                  this.getRecommendGoodsList()
+                })
+              }
+              .justifyContent(FlexAlign.Start)
+
+              // 卡片列表：更多绘本
+              if (this.recommendGoodsList?.length > 0 && this.recommendGoodsListState === 1) {
+                Column() {
+                  Flex({
+                    justifyContent: FlexAlign.Start, // Align items to the start (left) of the container
+                    wrap: FlexWrap.Wrap,
+                    space: {
+                      main: LengthMetrics.vp(25), // Horizontal spacing between items
+                      cross: LengthMetrics.vp(25) // Vertical spacing between items
+                    }
+                  }) {
+                    ForEach(this.recommendGoodsList, (item: ESObject) => {
+                      Column({ space: 10 }) {
+                        Stack() {
+                          Column()
+                            .width(20)
+                            .height(120)
+                            .linearGradient({
+                              angle: 90,
+                              colors: [["#b0a4a4a4", 0.0], ["#66989898", 0.5], ["#00ffffff", 1.0]]
+                            })
+                            .zIndex(999)
+                          Image(item.goods_thumb)
+                            .height(120)
+                            .width(120 * 0.757)
+                            .borderRadius({ topRight: 20 })
+                            .borderStyle(BorderStyle.Solid)
+                            .borderWidth(1)
+                            .borderColor("#f4f4f4")
+                            .shadow({
+                              radius: vp2px(10),
+                              color: "#688f8f8f",
+                              offsetX: 15,
+                              offsetY: 15,
+                              fill: true
+                            })
+                        }
+                        .alignContent(Alignment.Start)
+
+                        Text(item.goods_name)
+                          .width(120 * 0.757)
+                          .textAlign(TextAlign.Center)
+                          .fontSize(14)
+                          .fontColor("#404040")
+                          .maxLines(1)
+                          .textOverflow({ overflow: TextOverflow.Ellipsis })
+                      }
+                      .onClick(() => {
+                        // 销毁音频对象
+                        this.avPlayer?.pause()
+                        this.avPlayer?.release()
+                        this.currentPlayAudioItemState.playMode = false
+                        this.currentPlayAudioItemState.isShowPlayBar = false
+                        router.pushUrl({
+                          url: "pages/BookDetailPage",
+                          params: {
+                            id: item.goods_id
+                          }
+                        })
+                      })
+                    })
+                  }
+                  .width(3 * 120 * 0.757 + 2 * 25)
+
+                  if (this.isShowLoading) {
+                    Row() {
+                      LoadingItem()
+                    }
+                  }
+                }
+                .width("100%")
+                .alignItems(HorizontalAlign.Center)
+                .justifyContent(FlexAlign.Center)
+              }
+
+              // 卡片列表：推荐书单
+              if (this.recommendGoodsList?.length > 0 && this.recommendGoodsListState === 2) {
+                Column() {
+                  Flex({
+                    justifyContent: FlexAlign.Start, // Align items to the start (left) of the container
+                    wrap: FlexWrap.Wrap,
+                    space: {
+                      main: LengthMetrics.vp(10), // Horizontal spacing between items
+                      cross: LengthMetrics.vp(25) // Vertical spacing between items
+                    }
+                  }) {
+                    ForEach(this.recommendGoodsList, (item: ESObject) => {
+                      Column({ space: 10 }) {
+                        Text(item.goods_name)
+                          .width(180 - 5 * 2)
+                          .padding({ top: 15, left: 5, right: 5 })
+                          .fontSize(16)
+                          .fontColor("#404040")
+                          .maxLines(1)
+                          .textOverflow({ overflow: TextOverflow.Ellipsis })
+                        Image(item.goods_thumb)
+                          .width(180 - 2 * 10)
+                          .height((180 - 2 * 10) * 0.682)
+                          .objectFit(ImageFit.Cover)
+                          .padding({ left: 10, right: 10 })
+                      }
+                      .width(180)
+                      .height(170)
+                      .backgroundColor("#f6f6f6")
+                      .borderRadius(5)
+                      .onClick(() => {
+                        // 销毁音频对象
+                        this.avPlayer?.pause()
+                        this.avPlayer?.release()
+                        this.currentPlayAudioItemState.playMode = false
+                        this.currentPlayAudioItemState.isShowPlayBar = false
+                        router.pushUrl({
+                          url: "pages/BookListDetailPage",
+                          params: {
+                            id: item.goods_id
+                          }
+                        })
+                      })
+                    })
+                  }
+                  .width(2 * 180 + 2 * 5)
+
+                  if (this.isShowLoading) {
+                    Row() {
+                      LoadingItem()
+                    }
+                  }
+                }
+                .width("100%")
+                .alignItems(HorizontalAlign.Center)
+                .justifyContent(FlexAlign.Center)
+              }
+            }
+            .margin({ top: 10 })
+            .padding({
+              top: 15,
+              bottom: px2vp(this.bottomRectHeight),
+              left: 20,
+              right: 20
+            })
+            .alignItems(HorizontalAlign.Start)
+            .width("100%")
+            .backgroundColor("white")
           }
         }
       }
+      .onWillScroll(() => {
+        console.info('滚动到底', this.scroller.isAtEnd())
+        if (this.scroller.isAtEnd()) {
+          this.recommendGoodsListPage += 10
+          this.isShowLoading = true
+          this.getRecommendGoodsList()
+        }
+      })
 
       if (this.currentPlayAudioItemState.isShowPlayBar) {
         this.PlayAudioBarCard()
