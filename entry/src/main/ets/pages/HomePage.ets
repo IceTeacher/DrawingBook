@@ -5,6 +5,7 @@ import BookListItemCard from '../components/BookListItemCard';
 import router from '@ohos.router';
 import SearchItem from '../components/SearchItem';
 import BookItemCard from '../components/BookItemCard';
+import LoadingItem from '../components/LoadingItem';
 
 @Entry
 @Component
@@ -19,6 +20,12 @@ export default struct HomePage {
   @State talentGoodsList: Array<ESObject> = []
   // 所有分类列表
   @State category: Array<ESObject> = []
+  // 当前达人列表的页数
+  @State currentTalentGoodsListPage: number = 0
+  // 控制是否显示加载组件
+  @State isShowLoading: boolean = true
+  // scroller滚动控制器
+  scroller: Scroller = new Scroller()
 
   // 请求好书速递方法
   async getGoodBookList() {
@@ -52,9 +59,15 @@ export default struct HomePage {
   async getTalentGoodsList() {
     let httpObject = http.createHttp();
     let url =
-      "https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=0&from=index&sign=&uid="
+      `https://van.mama.cn/hb/api/goods/getTalentGoodsList?perpage=10&goods_type=1&goods_position=${this.currentTalentGoodsListPage}&from=index&sign=&uid=`
     let res = await httpObject.request(url)
-    this.talentGoodsList = JSON.parse(res["result"] as string)["data"]["list"]
+    const talentGoodsListRes: Array<ESObject> = JSON.parse(res["result"] as string)["data"]["list"]
+    if (this.currentTalentGoodsListPage !== 0) {
+      this.talentGoodsList.push(...talentGoodsListRes)
+    } else {
+      this.talentGoodsList = talentGoodsListRes
+    }
+    this.isShowLoading = false
     httpObject.destroy();
   }
 
@@ -93,7 +106,7 @@ export default struct HomePage {
       .width("100%")
       .padding({ left: 20, right: 20 })
 
-      Scroll() {
+      Scroll(this.scroller) {
         Column() {
           // 好书速递
           Column() {
@@ -367,6 +380,12 @@ export default struct HomePage {
                       })
                   }
                 })
+                if (this.isShowLoading) {
+                  ListItem() {
+                    LoadingItem()
+                  }
+                  .padding({ bottom: 80 })
+                }
               }
             }
             .width("100%")
@@ -380,6 +399,14 @@ export default struct HomePage {
       }
       .height('100%')
       .margin({ top: 20 })
+      .onWillScroll(() => {
+        console.info('滚动到底', this.scroller.isAtEnd())
+        if (this.scroller.isAtEnd()) {
+          this.currentTalentGoodsListPage += 10
+          this.isShowLoading = true
+          this.getTalentGoodsList()
+        }
+      })
     }
   }
 }
